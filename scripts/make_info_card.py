@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-Generates an animated developer info card SVG using the exact proven CSS pattern from stats.svg.
-- CSS @keyframes with slide/fade-in
-- Perfectly matches stats.svg and contrib-heatmap.svg
-- 100% compliant and proven in GitHub's SVG renderer
+Generates an animated developer info card SVG using CSS keyframe animations.
+- Starts writing sequentially after the PFP + stats finish (~5.2s).
+- Smooth typewriter / line slide-in effect that settles and freezes.
 """
 import html
 import os
@@ -37,14 +36,13 @@ lines = [
 ]
 
 def render_info_card():
-    # Exact CSS animation approach proven by stats.svg
     css = """
 .t {
   opacity: 0;
-  animation: in 0.45s ease-out both;
+  animation: in 0.40s ease-out both;
 }
 @keyframes in {
-  0% { opacity: 0; transform: translateY(10px); }
+  0% { opacity: 0; transform: translateY(8px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -74,7 +72,8 @@ def render_info_card():
     start_y = TITLEBAR_H + 28
     line_h = 24
     curr_y = start_y
-    delay = 0.15
+    # Starts writing after PFP + Stats finish!
+    delay = 5.2
 
     for item in lines:
         kind = item[0]
@@ -122,7 +121,7 @@ def render_info_card():
             )
 
         curr_y += line_h
-        delay += 0.14
+        delay += 0.16
 
     svg.append('</svg>')
     return "".join(svg)

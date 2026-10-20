@@ -2,8 +2,9 @@
 """
 Renders data/contributions.json as a GitHub contribution heatmap SVG:
 - Dark terminal card container (860px wide) with window header dots
-- Paced diagonal cascade (slower and noticeable)
-- Luminous glow bloom as each cell lights up, which gracefully fades out once fully settled
+- Starts IMMEDIATELY at 0.0s when profile opens
+- Snappy column-by-column cascade (~1.8s total), smooth month-by-month wave
+- Luminous glow bloom as each cell lights up, then settles cleanly
 - Freeze after completion (no infinite loops)
 """
 import datetime
@@ -34,10 +35,11 @@ ACCENT = "#58a6ff"
 GREEN = "#3fb950"
 GOLD = "#d29922"
 
-# Slower, paced wave timing
-COL_T = 0.045   # ~2.4s sweep across all 53 weeks
-ROW_T = 0.075   # gentle vertical cascade
-CELL_DUR = 0.85  # duration for each cell to bloom and settle
+# Snappy, rhythmic column progression:
+# 53 columns * 0.032s = ~1.7s total sweep across the whole year!
+COL_T = 0.032
+ROW_T = 0.025
+CELL_DUR = 0.50
 
 
 def level_for(count):
@@ -146,7 +148,7 @@ def render(data):
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: emptyCell 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: emptyCell 0.40s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }}
 @media (prefers-reduced-motion: reduce) {{
   .cell-active, .cell-empty {{ opacity: 1 !important; animation: none !important; filter: none !important; }}
@@ -192,7 +194,8 @@ def render(data):
                 continue
             date_s, count, lvl = cell
             gy = grid_top + ri * STEP
-            delay = 0.2 + (ci * COL_T + ri * ROW_T)
+            # Starts immediately at 0.0s!
+            delay = ci * COL_T + ri * ROW_T
             plural = "s" if count != 1 else ""
             cls_name = "cell-active" if lvl > 0 else "cell-empty"
             parts.append(

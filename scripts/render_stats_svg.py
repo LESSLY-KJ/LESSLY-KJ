@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
 Renders streak tiles and monthly chart card as animated SVG (840x880):
-- Counts up with numbers that decelerate into their final values
-- Monthly chart bars grow up from the base
-- Perfect companion alongside the ASCII portrait at equal width/height
+- Starts at 2.2s synchronized beside the ASCII portrait
+- Numbers count up and bars grow, settling cleanly by ~5.0s
 """
 import datetime
 import json
@@ -34,13 +33,15 @@ TILE_H = 145
 TILES_TOP = TITLEBAR_H + PAD + 6
 CHART_TOP = TILES_TOP + ROWS * TILE_H + (ROWS - 1) * GAP + GAP
 
-TILE_STAGGER = 0.16
-SLIDE_DUR = 0.50
-COUNT_DUR = 1.3
+# Starts together with PFP at 2.2s
+BASE_START = 2.2
+TILE_STAGGER = 0.12
+SLIDE_DUR = 0.40
+COUNT_DUR = 1.0
 FRAMES = 16
-BAR_START = TILE_STAGGER * COLS * ROWS + 0.4
-BAR_STAGGER = 0.08
-BAR_DUR = 0.65
+BAR_START = BASE_START + (TILE_STAGGER * COLS * ROWS) + 0.25
+BAR_STAGGER = 0.06
+BAR_DUR = 0.50
 
 def short(d):
     if not d:
@@ -102,8 +103,8 @@ for i, (label, value, suffix, caption, accent) in enumerate(tiles):
     col, row = i % COLS, i // COLS
     x = PAD + col * (TILE_W + GAP)
     y = TILES_TOP + row * (TILE_H + GAP)
-    start = i * TILE_STAGGER
-    count_start = start + SLIDE_DUR * 0.5
+    start = BASE_START + (i * TILE_STAGGER)
+    count_start = start + SLIDE_DUR * 0.4
 
     parts.append(f'<g class="t" style="animation-delay:{start:.2f}s">')
     parts.append(f'<rect x="{x:.1f}" y="{y}" width="{TILE_W:.1f}" height="{TILE_H}" rx="10" '
@@ -130,7 +131,7 @@ for i, (label, value, suffix, caption, accent) in enumerate(tiles):
 monthly = data.get("monthly", [])
 chart_x, chart_w = PAD, W - PAD * 2
 chart_h = H - PAD - CHART_TOP
-parts.append(f'<g class="t" style="animation-delay:{BAR_START - 0.2:.2f}s">')
+parts.append(f'<g class="t" style="animation-delay:{BAR_START - 0.15:.2f}s">')
 parts.append(f'<rect x="{chart_x}" y="{CHART_TOP}" width="{chart_w}" height="{chart_h}" rx="10" '
              f'fill="{TILE}" stroke="{FRAME}"/>')
 parts.append(f'<text x="{chart_x+22}" y="{CHART_TOP+36}" fill="{MUTED}" font-size="18">MONTHLY ACTIVITY</text>')
