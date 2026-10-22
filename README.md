@@ -3,7 +3,7 @@
 <!-- Real-time animated contribution graph -->
 <h2>Contributions</h2>
 
-<img src="./contrib-heatmap.svg" width="860" alt="GitHub contribution graph - auto-refreshed daily" />
+<a href="#contributions"><img src="./contrib-heatmap.svg" width="860" alt="GitHub contribution graph - auto-refreshed daily" /></a>
 
 <br><br>
 
@@ -11,10 +11,10 @@
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="./avatar-ascii.svg" width="420" alt="ASCII Portrait - Self Typing" />
+      <a href="#contributions"><img src="./avatar-ascii.svg" width="420" alt="ASCII Portrait - Self Typing" /></a>
     </td>
     <td width="50%" valign="top">
-      <img src="./stats.svg" width="420" alt="GitHub Streak and Contribution Stats" />
+      <a href="#contributions"><img src="./stats.svg" width="420" alt="GitHub Streak and Contribution Stats" /></a>
     </td>
   </tr>
 </table>
@@ -24,7 +24,7 @@
 <!-- Terminal Developer Info Card -->
 <h2>About Me</h2>
 
-<img src="./info-card.svg" width="860" alt="Developer Info Card" />
+<a href="#about-me"><img src="./info-card.svg" width="860" alt="Developer Info Card" /></a>
 
 <br><br>
 
