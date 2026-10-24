@@ -69,7 +69,7 @@ n_days = len(days_arr) or 365
 tiles = [
     ("current streak", cur["length"], " days", span(cur), GREEN),
     ("longest streak", lng["length"], " days", span(lng), ACCENT),
-    ("contributions", data.get("total_contributions", 0), "", "in the last year", INK),
+    ("contributions", data.get("total_contributions", 0), "", "in the past 12 months", INK),
     ("active days", data.get("active_days", 0), f" / {n_days}", f'{data.get("active_days", 0) / n_days:.0%} of the year', INK),
     ("best day", best["count"], "", short(best["date"]), INK),
     ("avg / active day", data.get("avg_per_active_day", 0), "", "contributions", INK),

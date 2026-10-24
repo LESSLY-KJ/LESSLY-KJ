@@ -226,7 +226,7 @@ def render(data):
     ly = sep_y + 22
     parts.append(f'<text x="{PAD}" y="{ly}" font-size="13" fill="{GREEN}">'
                  f'<tspan font-weight="700">{total:,}</tspan>'
-                 f'<tspan fill="{MUTED}"> contributions in the last year</tspan></text>')
+                 f'<tspan fill="{MUTED}"> contributions in the past 12 months</tspan></text>')
     parts.append(f'<text x="{canvas_w - PAD}" y="{ly}" font-size="11" fill="{MUTED}" text-anchor="end">'
                  f'{rng["start"]} &#8594; {rng["end"]}</text>')
     ly += 22
