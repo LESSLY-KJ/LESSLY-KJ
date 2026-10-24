@@ -32,7 +32,15 @@
 <h2>🛠️ Languages & Tools</h2>
 
 <p align="center">
-  <img src="https://skillicons.dev/icons?i=python,r,mysql,pandas,numpy,sklearn,powerbi,git,vscode&theme=dark" alt="Languages and Tools" />
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="Python" width="42" height="42" title="Python"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/r/r-original.svg" alt="R" width="42" height="42" title="R"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original.svg" alt="MySQL" width="42" height="42" title="MySQL"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/pandas/pandas-original.svg" alt="Pandas" width="42" height="42" title="Pandas"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/numpy/numpy-original.svg" alt="NumPy" width="42" height="42" title="NumPy"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/scikitlearn/scikitlearn-original.svg" alt="Scikit-Learn" width="42" height="42" title="Scikit-Learn"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/microsoft/PowerBI-Icons/main/SVG/Power-BI.svg" alt="Power BI" width="42" height="42" title="Power BI"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg" alt="Git" width="42" height="42" title="Git"/></a>&nbsp;&nbsp;
+  <a href="#languages--tools"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg" alt="VS Code" width="42" height="42" title="VS Code"/></a>
 </p>
 
 <br><br>
