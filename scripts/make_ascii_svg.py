@@ -2,7 +2,7 @@
 """
 Convert an avatar or profile photo into a monochrome animated ASCII SVG portrait.
 Each row types in from left to right with a cursor wiping across, then holds/freezes.
-Starts after the contribution heatmap finishes (~2.2s).
+Phase 2: Starts at 2.0s (0.1s after Phase 1 ends), finishes typing at ~3.6s.
 """
 from PIL import Image, ImageEnhance, ImageOps, ImageFilter
 import html
@@ -34,10 +34,10 @@ TITLE_TEXT = "#7d8590"
 INK = "#c9d1d9"
 CURSOR = "#58a6ff"
 
-# PFP begins writing at 2.2s, finishes typing in ~2.8s (ends at ~5.0s)
-BASE_START = 2.2
-TOTAL_TYPE_DUR = 2.8
-ROW_DUR = 0.08
+# Seamless start: exactly 2.0s (0.1s after Heatmap ends at 1.9s)
+BASE_START = 2.0
+TOTAL_TYPE_DUR = 1.6
+ROW_DUR = 0.05
 STAGGER = TOTAL_TYPE_DUR / ROWS
 
 im = Image.open(SRC).convert("L")

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Generates an animated Languages & Tools SVG (860x130):
+Generates an animated Languages & Tools SVG (860x136):
 - Dark terminal card container (860px wide) with window header dots
-- Sequential typewriter entry after the About Me card finishes (~6.8s)
-- Embedded high-res Devicon SVGs with name tags, subtle glow on entry, and clean hold
+- Phase 4: Starts at 5.2s (right after Phase 3 ends at 5.1s)
+- Embedded high-res Devicon SVGs with name tags, sequential pop with glow bloom
+- Finishes at ~6.7s, handing off immediately to Phase 5 (6.8s)
 """
 import base64
 import html
@@ -25,7 +26,6 @@ TEXT = "#c9d1d9"
 CYAN = "#58a6ff"
 GREEN = "#39d353"
 
-# Tools list: (Display Name, Icon URL)
 TOOLS = [
     ("Python", "https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg"),
     ("R", "https://raw.githubusercontent.com/devicons/devicon/master/icons/r/r-original.svg"),
@@ -44,27 +44,27 @@ def fetch_b64(url):
     return "data:image/svg+xml;base64," + base64.b64encode(data).decode("utf-8")
 
 def render_tools_card():
-    # Sequence starts at 6.8s (right after About Me completes)
-    BASE_START = 6.8
-    STAGGER = 0.16
+    # Phase 4 starts at 5.2s (Phase 3 ends at 5.1s + 0.1s gap)
+    BASE_START = 5.2
+    STAGGER = 0.12
 
     css = """
 .card {
   opacity: 0;
-  animation: cardIn 0.45s ease-out both;
+  animation: cardIn 0.35s ease-out both;
 }
 @keyframes cardIn {
-  0% { opacity: 0; transform: translateY(12px); }
+  0% { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 .tool-item {
   opacity: 0;
-  animation: popIn 0.50s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: popIn 0.40s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes popIn {
   0% {
     opacity: 0;
-    transform: translateY(14px) scale(0.85);
+    transform: translateY(12px) scale(0.85);
     filter: brightness(1);
   }
   50% {
@@ -105,7 +105,6 @@ def render_tools_card():
     svg.append(f'<text x="{W/2}" y="{TITLEBAR_H/2 + 4}" fill="{MUTED}" font-size="12" text-anchor="middle">Stack &amp; Technologies</text>')
     svg.append('</g>')
 
-    # 9 tools spaced across the card
     n_tools = len(TOOLS)
     usable_w = W - PAD * 2
     slot_w = usable_w / n_tools
@@ -115,7 +114,7 @@ def render_tools_card():
 
     for idx, (name, url) in enumerate(TOOLS):
         b64_src = fetch_b64(url)
-        delay = BASE_START + 0.20 + (idx * STAGGER)
+        delay = BASE_START + 0.10 + (idx * STAGGER)
         cx = PAD + (idx * slot_w) + (slot_w / 2)
         ix = cx - (icon_size / 2)
 

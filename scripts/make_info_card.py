@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 Generates an animated developer info card SVG using CSS keyframe animations.
-- Starts writing sequentially after the PFP + stats finish (~5.2s).
-- Smooth typewriter / line slide-in effect that settles and freezes.
+Phase 3: Starts at 3.8s (right after Phase 2 ends at ~3.6s), finishes at ~5.1s.
 """
 import html
 import os
@@ -39,7 +38,7 @@ def render_info_card():
     css = """
 .t {
   opacity: 0;
-  animation: in 0.40s ease-out both;
+  animation: in 0.35s ease-out both;
 }
 @keyframes in {
   0% { opacity: 0; transform: translateY(8px); }
@@ -72,8 +71,8 @@ def render_info_card():
     start_y = TITLEBAR_H + 28
     line_h = 24
     curr_y = start_y
-    # Starts writing after PFP + Stats finish!
-    delay = 5.2
+    # Phase 3 begins at 3.8s (Phase 2 finishes at 3.6s + 0.2s pause)
+    delay = 3.8
 
     for item in lines:
         kind = item[0]
@@ -121,7 +120,7 @@ def render_info_card():
             )
 
         curr_y += line_h
-        delay += 0.16
+        delay += 0.12
 
     svg.append('</svg>')
     return "".join(svg)

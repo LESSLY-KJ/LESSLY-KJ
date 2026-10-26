@@ -2,10 +2,8 @@
 """
 Renders data/contributions.json as a GitHub contribution heatmap SVG:
 - Dark terminal card container (860px wide) with window header dots
-- Starts IMMEDIATELY at 0.0s when profile opens
-- Snappy column-by-column cascade (~1.8s total), smooth month-by-month wave
-- Luminous glow bloom as each cell lights up, then settles cleanly
-- Freeze after completion (no infinite loops)
+- Phase 1: Starts IMMEDIATELY at 0.0s when profile opens
+- Finishes at exactly ~1.9s, handing off immediately to Phase 2 (2.0s)
 """
 import datetime
 import json
@@ -35,11 +33,10 @@ ACCENT = "#58a6ff"
 GREEN = "#3fb950"
 GOLD = "#d29922"
 
-# Snappy, rhythmic column progression:
-# 53 columns * 0.032s = ~1.7s total sweep across the whole year!
-COL_T = 0.032
-ROW_T = 0.025
-CELL_DUR = 0.50
+# Seamless flow: 52 * 0.027 + 6 * 0.015 + 0.40 = 1.89s (completes at 1.9s)
+COL_T = 0.027
+ROW_T = 0.015
+CELL_DUR = 0.40
 
 
 def level_for(count):
@@ -103,10 +100,6 @@ def render(data):
     stats_h = 82
     canvas_h = TITLEBAR_H + TOP_LABEL_H + art_h + stats_h + PAD
 
-    # Keyframes:
-    # 0%: hidden and scaled down slightly
-    # 40%: glowing bright (peak luminescence)
-    # 100%: normal opacity, glow fades completely
     css = f"""
 @keyframes cellGlow {{
   0% {{
@@ -148,7 +141,7 @@ def render(data):
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: emptyCell 0.40s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: emptyCell 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }}
 @media (prefers-reduced-motion: reduce) {{
   .cell-active, .cell-empty {{ opacity: 1 !important; animation: none !important; filter: none !important; }}
@@ -194,7 +187,6 @@ def render(data):
                 continue
             date_s, count, lvl = cell
             gy = grid_top + ri * STEP
-            # Starts immediately at 0.0s!
             delay = ci * COL_T + ri * ROW_T
             plural = "s" if count != 1 else ""
             cls_name = "cell-active" if lvl > 0 else "cell-empty"

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Renders streak tiles and monthly chart card as animated SVG (840x880):
-- Starts at 2.2s synchronized beside the ASCII portrait
-- Numbers count up and bars grow, settling cleanly by ~5.0s
+- Phase 2: Starts at 2.0s synchronized beside the ASCII portrait
+- Numbers count up and bars grow, settling cleanly by ~3.6s
 """
 import datetime
 import json
@@ -33,15 +33,15 @@ TILE_H = 145
 TILES_TOP = TITLEBAR_H + PAD + 6
 CHART_TOP = TILES_TOP + ROWS * TILE_H + (ROWS - 1) * GAP + GAP
 
-# Starts together with PFP at 2.2s
-BASE_START = 2.2
-TILE_STAGGER = 0.12
-SLIDE_DUR = 0.40
-COUNT_DUR = 1.0
+# Starts together with ASCII portrait at 2.0s
+BASE_START = 2.0
+TILE_STAGGER = 0.08
+SLIDE_DUR = 0.35
+COUNT_DUR = 0.70
 FRAMES = 16
-BAR_START = BASE_START + (TILE_STAGGER * COLS * ROWS) + 0.25
-BAR_STAGGER = 0.06
-BAR_DUR = 0.50
+BAR_START = BASE_START + (TILE_STAGGER * 5) + 0.15
+BAR_STAGGER = 0.05
+BAR_DUR = 0.40
 
 def short(d):
     if not d:
@@ -131,7 +131,7 @@ for i, (label, value, suffix, caption, accent) in enumerate(tiles):
 monthly = data.get("monthly", [])
 chart_x, chart_w = PAD, W - PAD * 2
 chart_h = H - PAD - CHART_TOP
-parts.append(f'<g class="t" style="animation-delay:{BAR_START - 0.15:.2f}s">')
+parts.append(f'<g class="t" style="animation-delay:{BAR_START - 0.10:.2f}s">')
 parts.append(f'<rect x="{chart_x}" y="{CHART_TOP}" width="{chart_w}" height="{chart_h}" rx="10" '
              f'fill="{TILE}" stroke="{FRAME}"/>')
 parts.append(f'<text x="{chart_x+22}" y="{CHART_TOP+36}" fill="{MUTED}" font-size="18">MONTHLY ACTIVITY</text>')

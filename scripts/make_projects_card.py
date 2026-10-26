@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
 Generates an animated Featured Projects SVG (860x260):
-- 2x2 grid of modern terminal cards matching the profile theme
-- Starts writing at ~8.5s right after the Languages & Tools animation finishes
-- Projects slide up with title, tech stack badge, and description, then hold
+- Phase 5: Starts at exactly 6.8s (right after Phase 4 ends at ~6.7s)
+- Projects cascade up in a 2x2 grid with color tags & descriptions, then hold
 """
 import html
 import os
@@ -20,7 +19,7 @@ BG2 = "#111722"
 TILE = "#161b22"
 FRAME = "#30363d"
 MUTED = "#8b949e"
-TEXT = "#c9d1d9"
+TEXT = "#e6edf3"
 CYAN = "#58a6ff"
 GREEN = "#39d353"
 GOLD = "#f2cc60"
@@ -58,20 +57,19 @@ PROJECTS = [
 ]
 
 def render_projects_card():
-    # Languages & Tools runs from 6.8s to ~8.4s.
-    # Projects card starts right after at 8.5s!
-    BASE_START = 8.5
-    STAGGER = 0.22
+    # Phase 5 starts at 6.8s (Phase 4 finishes at ~6.7s + 0.1s gap)
+    BASE_START = 6.8
+    STAGGER = 0.18
 
     css = """
 .tile {
   opacity: 0;
-  animation: tileSlide 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: tileSlide 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes tileSlide {
   0% {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(14px);
   }
   100% {
     opacity: 1;
@@ -111,19 +109,15 @@ def render_projects_card():
         icon = p["icon"]
 
         svg.append(f'<g class="tile" style="animation-delay: {delay:.2f}s">')
-        # Tile Container
         svg.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{tile_w:.1f}" height="{tile_h:.1f}" rx="10" fill="url(#tile_bg)" stroke="{FRAME}" stroke-width="1"/>')
         
-        # Header line inside tile
         svg.append(f'<text x="{x + 18:.1f}" y="{y + 28:.1f}" font-size="14" font-weight="700">')
         svg.append(f'<tspan fill="{TEXT}">{icon} {title}</tspan>')
         svg.append('</text>')
 
-        # Badge tag
         svg.append(f'<rect x="{x + 18:.1f}" y="{y + 38:.1f}" width="{len(tag) * 6.5 + 14:.1f}" height="18" rx="4" fill="{tag_col}" fill-opacity="0.12" stroke="{tag_col}" stroke-opacity="0.4" stroke-width="1"/>')
         svg.append(f'<text x="{x + 25:.1f}" y="{y + 51:.1f}" fill="{tag_col}" font-size="9" font-weight="700">{tag}</text>')
 
-        # Description text
         svg.append(f'<text x="{x + 18:.1f}" y="{y + 76:.1f}" fill="{MUTED}" font-size="11" width="{tile_w - 36}">{desc}</text>')
         svg.append('</g>')
 
