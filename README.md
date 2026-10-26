@@ -46,19 +46,19 @@
 <table width="860">
   <tr>
     <td width="33%" align="center">
-      <a href="https://github.com/iblamelessly/Ecommerce-big-Data-Analysis"><b>📦 View Ecommerce Repo</b></a>
+      <a href="https://github.com/LESSLY-KJ/Ecommerce-big-Data-Analysis"><b>📦 View Ecommerce Repo</b></a>
     </td>
     <td width="33%" align="center">
-      <a href="https://github.com/iblamelessly/NGO-Data-Analysis"><b>🤝 View NGO Repo</b></a>
+      <a href="https://github.com/LESSLY-KJ/NGO-Data-Analysis"><b>🤝 View NGO Repo</b></a>
     </td>
     <td width="33%" align="center">
-      <a href="https://github.com/iblamelessly/Titanic-Excel-Analysis"><b>📊 View Titanic Repo</b></a>
+      <a href="https://github.com/LESSLY-KJ/Titanic-Excel-Analysis"><b>📊 View Titanic Repo</b></a>
     </td>
   </tr>
   <tr>
     <td colspan="3" align="center">
       <br>
-      <a href="https://github.com/iblamelessly"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>
+      <a href="https://github.com/LESSLY-KJ"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>
       &nbsp;&nbsp;
       <a href="mailto:lessly1827@gmail.com"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" /></a>
     </td>

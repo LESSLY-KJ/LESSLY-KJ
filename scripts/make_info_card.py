@@ -27,7 +27,7 @@ lines = [
     ("header", ("Lessly K.J", "Data Analyst & AI Specialist")),
     ("div", "--------------------------------------------------------"),
     ("item", ("Role", "Data Analytics Specialist | AI & Machine Learning")),
-    ("item", ("GitHub", "https://github.com/iblamelessly")),
+    ("item", ("GitHub", "https://github.com/LESSLY-KJ")),
     ("item", ("Focus", "Big Data Analytics, Advanced EDA, Predictive Modeling, AI")),
     ("item", ("Projects", "Ecommerce Big Data, NGO Analytics, Titanic EDA")),
     ("item", ("Languages", "Python, SQL, R, Bash")),
