@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="260" viewBox="0 0 860 260" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"><style>
+.tile {
+  opacity: 0;
+  animation: tileSlide 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes tileSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile { opacity: 1 !important; transform: none !important; animation: none !important; }
+}
+</style><defs><linearGradient id="tile_bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#111722"/><stop offset="1" stop-color="#161b22"/></linearGradient></defs><g class="tile" style="animation-delay: 8.50s"><rect x="12.0" y="12.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#30363d" stroke-width="1"/><text x="30.0" y="40.0" font-size="14" font-weight="700"><tspan fill="#c9d1d9">📦 Ecommerce-big-Data-Analysis</tspan></text><rect x="30.0" y="50.0" width="124.5" height="18" rx="4" fill="#58a6ff" fill-opacity="0.12" stroke="#58a6ff" stroke-opacity="0.4" stroke-width="1"/><text x="37.0" y="63.0" fill="#58a6ff" font-size="9" font-weight="700">PYTHON • BIG DATA</text><text x="30.0" y="88.0" fill="#8b949e" font-size="11" width="375.0">Data pipeline &amp; consumer transaction analytics evaluating sales patterns and high-volume data.</text></g><g class="tile" style="animation-delay: 8.72s"><rect x="437.0" y="12.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#30363d" stroke-width="1"/><text x="455.0" y="40.0" font-size="14" font-weight="700"><tspan fill="#c9d1d9">🤝 NGO-Data-Analysis</tspan></text><rect x="455.0" y="50.0" width="98.5" height="18" rx="4" fill="#39d353" fill-opacity="0.12" stroke="#39d353" stroke-opacity="0.4" stroke-width="1"/><text x="462.0" y="63.0" fill="#39d353" font-size="9" font-weight="700">EDA • METRICS</text><text x="455.0" y="88.0" fill="#8b949e" font-size="11" width="375.0">Exploratory data analysis &amp; socioeconomic indicators modeled for non-profit operational decisions.</text></g><g class="tile" style="animation-delay: 8.94s"><rect x="12.0" y="137.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#30363d" stroke-width="1"/><text x="30.0" y="165.0" font-size="14" font-weight="700"><tspan fill="#c9d1d9">📊 Titanic-Excel-Analysis</tspan></text><rect x="30.0" y="175.0" width="137.5" height="18" rx="4" fill="#f2cc60" fill-opacity="0.12" stroke="#f2cc60" stroke-opacity="0.4" stroke-width="1"/><text x="37.0" y="188.0" fill="#f2cc60" font-size="9" font-weight="700">EXCEL • ML • PYTHON</text><text x="30.0" y="213.0" fill="#8b949e" font-size="11" width="375.0">Structured exploratory data analysis, statistical modeling, and survival classification insights.</text></g><g class="tile" style="animation-delay: 9.16s"><rect x="437.0" y="137.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#30363d" stroke-width="1"/><text x="455.0" y="165.0" font-size="14" font-weight="700"><tspan fill="#c9d1d9">📫 Connect With Me</tspan></text><rect x="455.0" y="175.0" width="176.5" height="18" rx="4" fill="#bc8cff" fill-opacity="0.12" stroke="#bc8cff" stroke-opacity="0.4" stroke-width="1"/><text x="462.0" y="188.0" fill="#bc8cff" font-size="9" font-weight="700">NETWORKING • OPEN TO WORK</text><text x="455.0" y="213.0" fill="#8b949e" font-size="11" width="375.0">Always open to data analyst collaborations, predictive modeling projects, and opportunities.</text></g></svg>
