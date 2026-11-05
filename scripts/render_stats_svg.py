@@ -34,14 +34,14 @@ TILES_TOP = TITLEBAR_H + PAD + 6
 CHART_TOP = TILES_TOP + ROWS * TILE_H + (ROWS - 1) * GAP + GAP
 
 # Starts together with ASCII portrait at 2.0s
-BASE_START = 2.0
-TILE_STAGGER = 0.08
-SLIDE_DUR = 0.35
-COUNT_DUR = 0.70
+BASE_START = 0.8
+TILE_STAGGER = 0.04
+SLIDE_DUR = 0.25
+COUNT_DUR = 0.45
 FRAMES = 16
 BAR_START = BASE_START + (TILE_STAGGER * 5) + 0.15
 BAR_STAGGER = 0.05
-BAR_DUR = 0.40
+BAR_DUR = 0.30
 
 def short(d):
     if not d:
@@ -163,3 +163,4 @@ svg = "".join(parts)
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(svg)
 print(f"wrote {OUT}: {W} x {H}, {len(svg)} bytes")
+
