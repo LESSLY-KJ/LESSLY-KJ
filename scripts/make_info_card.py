@@ -38,7 +38,7 @@ def render_info_card():
     css = """
 .t {
   opacity: 0;
-  animation: in 0.22s ease-out both;
+  animation: in 0.18s ease-out both;
 }
 @keyframes in {
   0% { opacity: 0; transform: translateY(8px); }
@@ -72,7 +72,7 @@ def render_info_card():
     line_h = 24
     curr_y = start_y
     # Phase 3 begins at 3.8s (Phase 2 finishes at 3.6s + 0.2s pause)
-    delay = 1.6
+    delay = 1.35
 
     for item in lines:
         kind = item[0]
@@ -120,7 +120,7 @@ def render_info_card():
             )
 
         curr_y += line_h
-        delay += 0.05
+        delay += 0.04
 
     svg.append('</svg>')
     return "".join(svg)
@@ -130,5 +130,6 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+
 
 

@@ -45,8 +45,8 @@ def fetch_b64(url):
 
 def render_tools_card():
     # Phase 4 starts at 5.2s (Phase 3 ends at 5.1s + 0.1s gap)
-    BASE_START = 2.1
-    STAGGER = 0.05
+    BASE_START = 1.80
+    STAGGER = 0.04
 
     css = """
 .card {
@@ -133,4 +133,5 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+
 

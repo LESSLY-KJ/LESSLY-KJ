@@ -34,9 +34,9 @@ GREEN = "#3fb950"
 GOLD = "#d29922"
 
 # Seamless flow: 52 * 0.027 + 6 * 0.015 + 0.40 = 1.89s (completes at 1.9s)
-COL_T = 0.015
-ROW_T = 0.008
-CELL_DUR = 0.25
+COL_T = 0.012
+ROW_T = 0.006
+CELL_DUR = 0.20
 
 
 def level_for(count):
@@ -243,4 +243,5 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(svg)
     print(f"Wrote {OUT_PATH} ({len(svg)} bytes)")
+
 

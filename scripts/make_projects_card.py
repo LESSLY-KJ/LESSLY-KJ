@@ -58,13 +58,13 @@ PROJECTS = [
 
 def render_projects_card():
     # Phase 5 starts at 6.8s (Phase 4 finishes at ~6.7s + 0.1s gap)
-    BASE_START = 2.5
-    STAGGER = 0.08
+    BASE_START = 2.20
+    STAGGER = 0.06
 
     css = """
 .tile {
   opacity: 0;
-  animation: tileSlide 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: tileSlide 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes tileSlide {
   0% {
@@ -129,4 +129,5 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+
 

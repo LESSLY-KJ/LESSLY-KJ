@@ -35,8 +35,8 @@ INK = "#c9d1d9"
 CURSOR = "#58a6ff"
 
 # Seamless start: exactly 2.0s (0.1s after Heatmap ends at 1.9s)
-BASE_START = 0.8
-TOTAL_TYPE_DUR = 0.8
+BASE_START = 0.65
+TOTAL_TYPE_DUR = 0.65
 ROW_DUR = 0.05
 STAGGER = TOTAL_TYPE_DUR / ROWS
 
@@ -102,4 +102,5 @@ svg = "".join(parts)
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(svg)
 print(f"wrote {OUT} ({len(svg)} bytes)")
+
 
