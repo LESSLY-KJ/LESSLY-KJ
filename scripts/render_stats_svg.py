@@ -64,7 +64,7 @@ cur = data.get("current_streak", {"length": 0})
 lng = data.get("longest_streak", {"length": 0})
 best = data.get("best_day", {"count": 0, "date": "N/A"})
 days_arr = data.get("days", [])
-n_days = len(days_arr) or 365
+n_days = 365
 
 tiles = [
     ("current streak", cur["length"], " days", span(cur), GREEN),
@@ -163,5 +163,6 @@ svg = "".join(parts)
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(svg)
 print(f"wrote {OUT}: {W} x {H}, {len(svg)} bytes")
+
 
 
