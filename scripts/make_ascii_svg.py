@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
 Convert an avatar photo into an animated ASCII SVG portrait.
-Dual-theme adaptive: adapts typography and terminal background to Light/Dark modes.
+Dual-theme adaptive:
+- Dark Mode: Dark background, light ink characters. Dark background = space, face/highlights = characters.
+- Light Mode: Light background, dark ink characters. Inverted density mapping so face and features
+  are drawn with ink while the light background remains clean white space.
 """
-from PIL import Image, ImageEnhance, ImageOps, ImageFilter
+from PIL import Image, ImageEnhance, ImageOps
 import html
 import os
 import sys
@@ -35,15 +38,28 @@ im = ImageEnhance.Contrast(im).enhance(1.4)
 im = im.resize((COLS, ROWS), Image.Resampling.LANCZOS)
 px = im.load()
 
-rows_txt = []
+# Dark theme: higher brightness = denser character
+dark_rows = []
+# Light theme: inverted brightness so darker facial features/hair get dense ink, light/transparent bg stays empty space
+light_rows = []
+
 for y in range(ROWS):
-    chars = []
+    d_chars = []
+    l_chars = []
     for x in range(COLS):
         val = px[x, y]
-        idx = int(val / 256 * len(RAMP))
-        idx = max(0, min(len(RAMP) - 1, idx))
-        chars.append(RAMP[idx])
-    rows_txt.append("".join(chars))
+        # Dark mode index
+        d_idx = int(val / 256 * len(RAMP))
+        d_idx = max(0, min(len(RAMP) - 1, d_idx))
+        d_chars.append(RAMP[d_idx])
+
+        # Light mode index (inverted)
+        l_idx = int((255 - val) / 256 * len(RAMP))
+        l_idx = max(0, min(len(RAMP) - 1, l_idx))
+        l_chars.append(RAMP[l_idx])
+
+    dark_rows.append("".join(d_chars))
+    light_rows.append("".join(l_chars))
 
 css = f"""
 :root {{
@@ -65,7 +81,16 @@ css = f"""
     --ink: #1f2328;
     --cursor: #0969da;
   }}
+  .row-dark {{ display: none !important; }}
+  .row-light {{ display: inline !important; }}
 }}
+@media (prefers-color-scheme: dark) {{
+  .row-light {{ display: none !important; }}
+  .row-dark {{ display: inline !important; }}
+}}
+/* Default fallback when prefers-color-scheme is not supported */
+.row-light {{ display: none; }}
+
 .card-frame {{ stroke: var(--frame); stroke-width: 1.2px; }}
 .sep-line {{ stroke: var(--sep); }}
 .txt-title {{ fill: var(--title); }}
@@ -101,9 +126,20 @@ for y in range(ROWS):
     parts.append(f'<animate attributeName="width" from="0" to="{ART_W_TARGET:.1f}" begin="{t_start:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>')
     parts.append('</rect></clipPath>')
 
-    escaped = html.escape(rows_txt[y])
+    d_esc = html.escape(dark_rows[y])
+    l_esc = html.escape(light_rows[y])
+
     parts.append(f'<g clip-path="url(#{clip_id})">')
-    parts.append(f'<text class="txt-ink" xml:space="preserve" x="{PAD}" y="{row_y + CELL_H * 0.74:.1f}" font-size="{CELL_H * 0.9:.1f}" textLength="{ART_W_TARGET:.1f}" lengthAdjust="spacing">{escaped}</text>')
+    # Dark mode text node
+    parts.append(
+        f'<text class="txt-ink row-dark" xml:space="preserve" x="{PAD}" y="{row_y + CELL_H * 0.74:.1f}" '
+        f'font-size="{CELL_H * 0.9:.1f}" textLength="{ART_W_TARGET:.1f}" lengthAdjust="spacing">{d_esc}</text>'
+    )
+    # Light mode text node (inverted density)
+    parts.append(
+        f'<text class="txt-ink row-light" xml:space="preserve" x="{PAD}" y="{row_y + CELL_H * 0.74:.1f}" '
+        f'font-size="{CELL_H * 0.9:.1f}" textLength="{ART_W_TARGET:.1f}" lengthAdjust="spacing">{l_esc}</text>'
+    )
     parts.append('</g>')
 
     parts.append(
