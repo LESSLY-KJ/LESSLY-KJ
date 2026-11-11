@@ -8,12 +8,12 @@
 <br><br>
 
 <!-- Dual side-by-side terminal windows: Animated ASCII portrait + Streak & Bar Chart stats -->
-<table>
-  <tr>
-    <td width="50%" valign="top">
+<table border="0" cellspacing="0" cellpadding="0" style="border:none; border-collapse:collapse;">
+  <tr style="border:none;">
+    <td width="50%" valign="top" style="border:none; padding:0 6px 0 0;">
       <a href="#contributions"><img src="./avatar-ascii.svg" width="420" alt="ASCII Portrait - Self Typing" /></a>
     </td>
-    <td width="50%" valign="top">
+    <td width="50%" valign="top" style="border:none; padding:0 0 0 6px;">
       <a href="#contributions"><img src="./stats.svg" width="420" alt="GitHub Streak and Contribution Stats" /></a>
     </td>
   </tr>
@@ -43,20 +43,20 @@
 <br><br>
 
 <!-- Direct Interactive Links & Contact -->
-<table width="860">
-  <tr>
-    <td width="33%" align="center">
+<table width="860" border="0" cellspacing="0" cellpadding="0" style="border:none; border-collapse:collapse;">
+  <tr style="border:none;">
+    <td width="33%" align="center" style="border:none;">
       <a href="https://github.com/LESSLY-KJ/Ecommerce-big-Data-Analysis"><b>📦 View Ecommerce Repo</b></a>
     </td>
-    <td width="33%" align="center">
+    <td width="33%" align="center" style="border:none;">
       <a href="https://github.com/LESSLY-KJ/NGO-Data-Analysis"><b>🤝 View NGO Repo</b></a>
     </td>
-    <td width="33%" align="center">
+    <td width="33%" align="center" style="border:none;">
       <a href="https://github.com/LESSLY-KJ/Titanic-Excel-Analysis"><b>📊 View Titanic Repo</b></a>
     </td>
   </tr>
-  <tr>
-    <td colspan="3" align="center">
+  <tr style="border:none;">
+    <td colspan="3" align="center" style="border:none;">
       <br>
       <a href="https://github.com/LESSLY-KJ"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" /></a>
       &nbsp;&nbsp;

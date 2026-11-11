@@ -15,7 +15,7 @@ PAD = 24
 
 BG = "#0d1117"
 BG2 = "#111722"
-FRAME = "#30363d"
+FRAME = "#444c56"
 MUTED = "#8b949e"
 TEXT = "#e6edf3"
 CYAN = "#58a6ff"
@@ -59,7 +59,7 @@ def render_info_card():
         '</linearGradient>',
         '</defs>',
         f'<rect width="{W}" height="{H}" rx="12" fill="url(#bg_info)"/>',
-        f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1"/>',
+        f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1.2"/>',
         f'<line x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}" stroke="{FRAME}"/>',
     ]
 
@@ -130,6 +130,7 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+
 
 
 

@@ -17,7 +17,7 @@ GAP = 14
 BG = "#0d1117"
 BG2 = "#111722"
 TILE = "#161b22"
-FRAME = "#30363d"
+FRAME = "#444c56"
 MUTED = "#8b949e"
 TEXT = "#e6edf3"
 CYAN = "#58a6ff"
@@ -109,13 +109,13 @@ def render_projects_card():
         icon = p["icon"]
 
         svg.append(f'<g class="tile" style="animation-delay: {delay:.2f}s">')
-        svg.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{tile_w:.1f}" height="{tile_h:.1f}" rx="10" fill="url(#tile_bg)" stroke="{FRAME}" stroke-width="1"/>')
+        svg.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{tile_w:.1f}" height="{tile_h:.1f}" rx="10" fill="url(#tile_bg)" stroke="{FRAME}" stroke-width="1.2"/>')
         
         svg.append(f'<text x="{x + 18:.1f}" y="{y + 28:.1f}" font-size="14" font-weight="700">')
         svg.append(f'<tspan fill="{TEXT}">{icon} {title}</tspan>')
         svg.append('</text>')
 
-        svg.append(f'<rect x="{x + 18:.1f}" y="{y + 38:.1f}" width="{len(tag) * 6.5 + 14:.1f}" height="18" rx="4" fill="{tag_col}" fill-opacity="0.12" stroke="{tag_col}" stroke-opacity="0.4" stroke-width="1"/>')
+        svg.append(f'<rect x="{x + 18:.1f}" y="{y + 38:.1f}" width="{len(tag) * 6.5 + 14:.1f}" height="18" rx="4" fill="{tag_col}" fill-opacity="0.12" stroke="{tag_col}" stroke-opacity="0.4" stroke-width="1.2"/>')
         svg.append(f'<text x="{x + 25:.1f}" y="{y + 51:.1f}" fill="{tag_col}" font-size="9" font-weight="700">{tag}</text>')
 
         svg.append(f'<text x="{x + 18:.1f}" y="{y + 76:.1f}" fill="{MUTED}" font-size="11" width="{tile_w - 36}">{desc}</text>')
@@ -129,5 +129,6 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+
 
 

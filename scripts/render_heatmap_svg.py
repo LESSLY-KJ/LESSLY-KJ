@@ -26,7 +26,7 @@ TITLEBAR_H = 34
 
 BG = "#0a0e14"
 BG2 = "#0e1522"
-FRAME = "#30363d"
+FRAME = "#444c56"
 MUTED = "#8b949e"
 TEXT = "#c9d1d9"
 ACCENT = "#58a6ff"
@@ -159,7 +159,7 @@ def render(data):
         '</defs>',
         f'<rect width="{canvas_w}" height="{canvas_h}" rx="10" fill="url(#hbg)"/>',
         f'<rect x="0.5" y="0.5" width="{canvas_w-1}" height="{canvas_h-1}" rx="10" '
-        f'fill="none" stroke="{FRAME}" stroke-width="1" stroke-opacity="0.6"/>',
+        f'fill="none" stroke="{FRAME}" stroke-width="1.2" stroke-opacity="0.9"/>',
         f'<line x1="0" y1="{TITLEBAR_H}" x2="{canvas_w}" y2="{TITLEBAR_H}" stroke="{FRAME}" stroke-opacity="0.5"/>',
     ]
     # Window controls
@@ -243,5 +243,6 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(svg)
     print(f"Wrote {OUT_PATH} ({len(svg)} bytes)")
+
 
 

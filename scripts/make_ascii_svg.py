@@ -29,7 +29,7 @@ CANVAS_H = 880
 
 BG = "#0d1117"
 BG2 = "#111722"
-FRAME = "#30363d"
+FRAME = "#444c56"
 TITLE_TEXT = "#7d8590"
 INK = "#c9d1d9"
 CURSOR = "#58a6ff"
@@ -66,7 +66,7 @@ parts = [
     f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>'
     f'</linearGradient></defs>',
     f'<rect width="{CANVAS_W}" height="{CANVAS_H}" rx="12" fill="url(#bg_ascii)"/>',
-    f'<rect x="0.5" y="0.5" width="{CANVAS_W-1}" height="{CANVAS_H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1"/>',
+    f'<rect x="0.5" y="0.5" width="{CANVAS_W-1}" height="{CANVAS_H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1.2"/>',
     f'<line x1="0" y1="{TITLEBAR_H}" x2="{CANVAS_W}" y2="{TITLEBAR_H}" stroke="{FRAME}"/>',
 ]
 
@@ -102,5 +102,6 @@ svg = "".join(parts)
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(svg)
 print(f"wrote {OUT} ({len(svg)} bytes)")
+
 
 

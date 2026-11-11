@@ -16,7 +16,7 @@ OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, "..", "stats.svg"
 BG = "#0d1117"
 BG2 = "#111722"
 TILE = "#161b22"
-FRAME = "#30363d"
+FRAME = "#444c56"
 MUTED = "#8b949e"
 INK = "#e6edf3"
 GREEN = "#39d353"
@@ -91,8 +91,8 @@ parts = [
     f'<defs><linearGradient id="bg_stats" x1="0" y1="0" x2="0" y2="1">'
     f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/></linearGradient></defs>',
     f'<rect width="{W}" height="{H}" rx="12" fill="url(#bg_stats)"/>',
-    f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{FRAME}"/>',
-    f'<line x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}" stroke="{FRAME}"/>',
+    f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1.2"/>',
+    f'<line x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}" stroke="{FRAME}" stroke-width="1.2"/>',
 ]
 
 for i, dot in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
@@ -108,7 +108,7 @@ for i, (label, value, suffix, caption, accent) in enumerate(tiles):
 
     parts.append(f'<g class="t" style="animation-delay:{start:.2f}s">')
     parts.append(f'<rect x="{x:.1f}" y="{y}" width="{TILE_W:.1f}" height="{TILE_H}" rx="10" '
-                 f'fill="{TILE}" stroke="{FRAME}"/>')
+                 f'fill="{TILE}" stroke="{FRAME}" stroke-width="1.2"/>')
     parts.append(f'<text x="{x+22:.1f}" y="{y+36}" fill="{MUTED}" font-size="18">{label.upper()}</text>')
 
     num_y = y + 94
@@ -133,7 +133,7 @@ chart_x, chart_w = PAD, W - PAD * 2
 chart_h = H - PAD - CHART_TOP
 parts.append(f'<g class="t" style="animation-delay:{BAR_START - 0.10:.2f}s">')
 parts.append(f'<rect x="{chart_x}" y="{CHART_TOP}" width="{chart_w}" height="{chart_h}" rx="10" '
-             f'fill="{TILE}" stroke="{FRAME}"/>')
+             f'fill="{TILE}" stroke="{FRAME}" stroke-width="1.2"/>')
 parts.append(f'<text x="{chart_x+22}" y="{CHART_TOP+36}" fill="{MUTED}" font-size="18">MONTHLY ACTIVITY</text>')
 parts.append('</g>')
 
@@ -163,6 +163,7 @@ svg = "".join(parts)
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(svg)
 print(f"wrote {OUT}: {W} x {H}, {len(svg)} bytes")
+
 
 
 
