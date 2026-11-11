@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """
-Generates an animated Languages & Tools SVG (860x136):
-- Dark terminal card container (860px wide) with window header dots
-- Phase 4: Starts at 5.2s (right after Phase 3 ends at 5.1s)
-- Embedded high-res Devicon SVGs with name tags, sequential pop with glow bloom
-- Finishes at ~6.7s, handing off immediately to Phase 5 (6.8s)
+Generates an animated Languages & Tools SVG:
+Dual-theme adaptive: adapts card styling and typography to Light and Dark modes.
 """
 import base64
 import html
@@ -17,14 +14,6 @@ W = 860
 H = 136
 TITLEBAR_H = 34
 PAD = 24
-
-BG = "#0d1117"
-BG2 = "#111722"
-FRAME = "#444c56"
-MUTED = "#8b949e"
-TEXT = "#c9d1d9"
-CYAN = "#58a6ff"
-GREEN = "#39d353"
 
 TOOLS = [
     ("Python", "https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg"),
@@ -44,11 +33,33 @@ def fetch_b64(url):
     return "data:image/svg+xml;base64," + base64.b64encode(data).decode("utf-8")
 
 def render_tools_card():
-    # Phase 4 starts at 5.2s (Phase 3 ends at 5.1s + 0.1s gap)
     BASE_START = 1.80
     STAGGER = 0.04
 
     css = """
+:root {
+  --bg-top: #111722;
+  --bg-bot: #0d1117;
+  --frame: #30363d;
+  --sep: #30363d;
+  --muted: #8b949e;
+  --text: #c9d1d9;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-top: #ffffff;
+    --bg-bot: #f6f8fa;
+    --frame: #d0d7de;
+    --sep: #d8dee4;
+    --muted: #656d76;
+    --text: #1f2328;
+  }
+}
+.card-frame { stroke: var(--frame); stroke-width: 1.2px; }
+.sep-line { stroke: var(--sep); }
+.txt-muted { fill: var(--muted); }
+.txt-tool { fill: var(--text); }
+
 .card {
   opacity: 0;
   animation: cardIn 0.35s ease-out both;
@@ -59,27 +70,20 @@ def render_tools_card():
 }
 .tool-item {
   opacity: 0;
-  animation: popIn 0.40s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: popIn 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes popIn {
   0% {
     opacity: 0;
-    transform: translateY(12px) scale(0.85);
-    filter: brightness(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-2px) scale(1.05);
-    filter: brightness(1.6) drop-shadow(0 0 6px rgba(88, 166, 255, 0.7));
+    transform: translateY(10px) scale(0.9);
   }
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
-    filter: brightness(1) drop-shadow(0 0 0 transparent);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .card, .tool-item { opacity: 1 !important; transform: none !important; animation: none !important; filter: none !important; }
+  .card, .tool-item { opacity: 1 !important; transform: none !important; animation: none !important; }
 }
 """
 
@@ -89,20 +93,19 @@ def render_tools_card():
         f'<style>{css}</style>',
         '<defs>',
         f'<linearGradient id="bg_tools" x1="0" y1="0" x2="0" y2="1">',
-        f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>',
+        f'<stop offset="0" stop-color="var(--bg-top)"/><stop offset="1" stop-color="var(--bg-bot)"/>',
         '</linearGradient>',
         '</defs>',
-        # Background window
         f'<g class="card" style="animation-delay: {BASE_START:.2f}s">',
         f'<rect width="{W}" height="{H}" rx="12" fill="url(#bg_tools)"/>',
-        f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1.2"/>',
-        f'<line x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}" stroke="{FRAME}"/>',
+        f'<rect class="card-frame" x="0.6" y="0.6" width="{W-1.2:.1f}" height="{H-1.2:.1f}" rx="12" fill="none"/>',
+        f'<line class="sep-line" x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}"/>',
     ]
 
     for i, dotcol in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
         svg.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dotcol}"/>')
 
-    svg.append(f'<text x="{W/2}" y="{TITLEBAR_H/2 + 4}" fill="{MUTED}" font-size="12" text-anchor="middle">Stack &amp; Technologies</text>')
+    svg.append(f'<text class="txt-muted" x="{W/2}" y="{TITLEBAR_H/2 + 4}" font-size="12" text-anchor="middle">Stack &amp; Technologies</text>')
     svg.append('</g>')
 
     n_tools = len(TOOLS)
@@ -113,26 +116,26 @@ def render_tools_card():
     text_y = icon_y + icon_size + 18
 
     for idx, (name, url) in enumerate(TOOLS):
-        b64_src = fetch_b64(url)
-        delay = BASE_START + 0.10 + (idx * STAGGER)
-        cx = PAD + (idx * slot_w) + (slot_w / 2)
-        ix = cx - (icon_size / 2)
+        b64 = fetch_b64(url)
+        center_x = PAD + idx * slot_w + slot_w / 2
+        img_x = center_x - icon_size / 2
+        delay = BASE_START + (idx * STAGGER)
 
+        svg.append(f'<g class="tool-item" style="animation-delay: {delay:.2f}s">')
         svg.append(
-            f'<g class="tool-item" style="animation-delay: {delay:.2f}s">'
-            f'<image href="{b64_src}" x="{ix:.1f}" y="{icon_y}" width="{icon_size}" height="{icon_size}"/>'
-            f'<text x="{cx:.1f}" y="{text_y}" fill="{MUTED}" font-size="11" text-anchor="middle">{html.escape(name)}</text>'
-            f'</g>'
+            f'<image href="{b64}" x="{img_x:.1f}" y="{icon_y}" width="{icon_size}" height="{icon_size}"/>'
         )
+        svg.append(
+            f'<text class="txt-tool" x="{center_x:.1f}" y="{text_y}" font-size="12" font-weight="600" text-anchor="middle">{html.escape(name)}</text>'
+        )
+        svg.append('</g>')
 
     svg.append('</svg>')
     return "".join(svg)
+
 
 if __name__ == "__main__":
     content = render_tools_card()
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
-
-
-

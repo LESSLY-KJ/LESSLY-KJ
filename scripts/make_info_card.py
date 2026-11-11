@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generates an animated developer info card SVG using CSS keyframe animations.
-Phase 3: Starts at 3.8s (right after Phase 2 ends at ~3.6s), finishes at ~5.1s.
+Dual-theme adaptive: adapts between Dark and Light color schemes.
 """
 import html
 import os
@@ -12,15 +12,6 @@ W = 860
 H = 340
 TITLEBAR_H = 34
 PAD = 24
-
-BG = "#0d1117"
-BG2 = "#111722"
-FRAME = "#444c56"
-MUTED = "#8b949e"
-TEXT = "#e6edf3"
-CYAN = "#58a6ff"
-GREEN = "#39d353"
-ACCENT = "#58a6ff"
 
 lines = [
     ("header", ("Lessly K.J", "Data Analyst & AI Specialist")),
@@ -36,6 +27,35 @@ lines = [
 
 def render_info_card():
     css = """
+:root {
+  --bg-top: #111722;
+  --bg-bot: #0d1117;
+  --frame: #30363d;
+  --sep: #30363d;
+  --muted: #8b949e;
+  --text: #e6edf3;
+  --cyan: #58a6ff;
+  --green: #39d353;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-top: #ffffff;
+    --bg-bot: #f6f8fa;
+    --frame: #d0d7de;
+    --sep: #d8dee4;
+    --muted: #656d76;
+    --text: #1f2328;
+    --cyan: #0969da;
+    --green: #1a7f37;
+  }
+}
+.card-frame { stroke: var(--frame); stroke-width: 1.2px; }
+.sep-line { stroke: var(--sep); }
+.txt-muted { fill: var(--muted); }
+.txt-main { fill: var(--text); }
+.txt-cyan { fill: var(--cyan); }
+.txt-green { fill: var(--green); }
+
 .t {
   opacity: 0;
   animation: in 0.18s ease-out both;
@@ -55,23 +75,22 @@ def render_info_card():
         f'<style>{css}</style>',
         '<defs>',
         f'<linearGradient id="bg_info" x1="0" y1="0" x2="0" y2="1">',
-        f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>',
+        f'<stop offset="0" stop-color="var(--bg-top)"/><stop offset="1" stop-color="var(--bg-bot)"/>',
         '</linearGradient>',
         '</defs>',
         f'<rect width="{W}" height="{H}" rx="12" fill="url(#bg_info)"/>',
-        f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1.2"/>',
-        f'<line x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}" stroke="{FRAME}"/>',
+        f'<rect class="card-frame" x="0.6" y="0.6" width="{W-1.2:.1f}" height="{H-1.2:.1f}" rx="12" fill="none"/>',
+        f'<line class="sep-line" x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}"/>',
     ]
 
     for i, dotcol in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
         svg.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dotcol}"/>')
 
-    svg.append(f'<text x="{W/2}" y="{TITLEBAR_H/2 + 4}" fill="{MUTED}" font-size="12" text-anchor="middle">Developer Profile</text>')
+    svg.append(f'<text class="txt-muted" x="{W/2}" y="{TITLEBAR_H/2 + 4}" font-size="12" text-anchor="middle">Developer Profile</text>')
 
     start_y = TITLEBAR_H + 28
     line_h = 24
     curr_y = start_y
-    # Phase 3 begins at 3.8s (Phase 2 finishes at 3.6s + 0.2s pause)
     delay = 1.35
 
     for item in lines:
@@ -84,16 +103,16 @@ def render_info_card():
             svg.append(
                 f'<g class="t" style="animation-delay:{delay_str}">'
                 f'<text x="{PAD}" y="{curr_y}" font-size="14">'
-                f'<tspan fill="{GREEN}" font-weight="700">{name}</tspan>'
-                f'<tspan fill="{MUTED}"> &#8226; </tspan>'
-                f'<tspan fill="{CYAN}" font-weight="600">{role}</tspan>'
-                f'<tspan fill="{GREEN}"> _</tspan>'
+                f'<tspan class="txt-green" font-weight="700">{name}</tspan>'
+                f'<tspan class="txt-muted"> &#8226; </tspan>'
+                f'<tspan class="txt-cyan" font-weight="600">{role}</tspan>'
+                f'<tspan class="txt-green"> _</tspan>'
                 f'</text></g>'
             )
         elif kind == "div":
             svg.append(
                 f'<g class="t" style="animation-delay:{delay_str}">'
-                f'<text x="{PAD}" y="{curr_y}" fill="{MUTED}" font-size="12">{html.escape(item[1])}</text>'
+                f'<text class="txt-muted" x="{PAD}" y="{curr_y}" font-size="12">{html.escape(item[1])}</text>'
                 f'</g>'
             )
         elif kind == "item":
@@ -102,9 +121,9 @@ def render_info_card():
             svg.append(
                 f'<g class="t" style="animation-delay:{delay_str}">'
                 f'<text x="{PAD}" y="{curr_y}" font-size="13">'
-                f'<tspan fill="{CYAN}" font-weight="600">{key:<10}</tspan>'
-                f'<tspan fill="{MUTED}">: </tspan>'
-                f'<tspan fill="{TEXT}">{val}</tspan>'
+                f'<tspan class="txt-cyan" font-weight="600">{key:<10}</tspan>'
+                f'<tspan class="txt-muted">: </tspan>'
+                f'<tspan class="txt-main">{val}</tspan>'
                 f'</text></g>'
             )
         elif kind == "palette":
@@ -125,12 +144,9 @@ def render_info_card():
     svg.append('</svg>')
     return "".join(svg)
 
+
 if __name__ == "__main__":
     content = render_info_card()
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
-
-
-
-

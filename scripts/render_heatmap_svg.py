@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
 Renders data/contributions.json as a GitHub contribution heatmap SVG:
-- Dark terminal card container (860px wide) with window header dots
-- Phase 1: Starts IMMEDIATELY at 0.0s when profile opens
-- Finishes at exactly ~1.9s, handing off immediately to Phase 2 (2.0s)
+- Dual-theme adaptive: adapts seamlessly between Dark Mode and Light Mode via CSS prefers-color-scheme.
+- Starts immediately at 0.0s, completes by ~0.80s.
 """
 import datetime
 import json
@@ -13,8 +12,9 @@ HERE = os.path.dirname(__file__)
 IN_PATH = os.path.join(HERE, "..", "data", "contributions.json")
 OUT_PATH = os.path.join(HERE, "..", "contrib-heatmap.svg")
 
-# GitHub standard green palette
-PALETTE = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353", "#56e370"]
+# Palettes
+DARK_PALETTE = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353", "#56e370"]
+LIGHT_PALETTE = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39", "#114f24"]
 
 CELL = 12
 GAP = 3
@@ -24,16 +24,6 @@ LEFT_LABEL_W = 32
 TOP_LABEL_H = 22
 TITLEBAR_H = 34
 
-BG = "#0a0e14"
-BG2 = "#0e1522"
-FRAME = "#444c56"
-MUTED = "#8b949e"
-TEXT = "#c9d1d9"
-ACCENT = "#58a6ff"
-GREEN = "#3fb950"
-GOLD = "#d29922"
-
-# Seamless flow: 52 * 0.027 + 6 * 0.015 + 0.40 = 1.89s (completes at 1.9s)
 COL_T = 0.012
 ROW_T = 0.006
 CELL_DUR = 0.20
@@ -57,7 +47,7 @@ def build_grid(days):
     if not days:
         return []
     first = datetime.date.fromisoformat(days[0]["date"])
-    lead_pad = (first.weekday() + 1) % 7  # sunday=0
+    lead_pad = (first.weekday() + 1) % 7
     grid = []
     col = [None] * lead_pad
     for d in days:
@@ -101,35 +91,65 @@ def render(data):
     canvas_h = TITLEBAR_H + TOP_LABEL_H + art_h + stats_h + PAD
 
     css = f"""
-@keyframes cellGlow {{
-  0% {{
-    opacity: 0;
-    transform: scale(0.6);
-    filter: brightness(1);
-  }}
-  40% {{
-    opacity: 1;
-    transform: scale(1.15);
-    filter: brightness(2.6) drop-shadow(0 0 6px rgba(57, 211, 83, 0.95));
-  }}
-  75% {{
-    filter: brightness(1.4) drop-shadow(0 0 2px rgba(57, 211, 83, 0.4));
-  }}
-  100% {{
-    opacity: 1;
-    transform: scale(1);
-    filter: brightness(1) drop-shadow(0 0 0 transparent);
+:root {{
+  --bg-top: #0e1522;
+  --bg-bot: #0a0e14;
+  --frame: #30363d;
+  --sep: #30363d;
+  --muted: #8b949e;
+  --text: #c9d1d9;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --gold: #d29922;
+  --l0: #161b22;
+  --l1: #0e4429;
+  --l2: #006d32;
+  --l3: #26a641;
+  --l4: #39d353;
+  --l5: #56e370;
+}}
+@media (prefers-color-scheme: light) {{
+  :root {{
+    --bg-top: #ffffff;
+    --bg-bot: #f6f8fa;
+    --frame: #d0d7de;
+    --sep: #d8dee4;
+    --muted: #656d76;
+    --text: #1f2328;
+    --accent: #0969da;
+    --green: #1a7f37;
+    --gold: #9a6700;
+    --l0: #ebedf0;
+    --l1: #9be9a8;
+    --l2: #40c463;
+    --l3: #30a14e;
+    --l4: #216e39;
+    --l5: #114f24;
   }}
 }}
+.card-frame {{ stroke: var(--frame); stroke-width: 1.2px; }}
+.sep-line {{ stroke: var(--sep); }}
+.txt-muted {{ fill: var(--muted); }}
+.txt-main {{ fill: var(--text); }}
+.txt-accent {{ fill: var(--accent); }}
+.txt-green {{ fill: var(--green); }}
+.txt-gold {{ fill: var(--gold); }}
+
+.lvl-0 {{ fill: var(--l0); }}
+.lvl-1 {{ fill: var(--l1); }}
+.lvl-2 {{ fill: var(--l2); }}
+.lvl-3 {{ fill: var(--l3); }}
+.lvl-4 {{ fill: var(--l4); }}
+.lvl-5 {{ fill: var(--l5); }}
+
+@keyframes cellGlow {{
+  0% {{ opacity: 0; transform: scale(0.6); }}
+  40% {{ opacity: 1; transform: scale(1.15); }}
+  100% {{ opacity: 1; transform: scale(1); }}
+}}
 @keyframes emptyCell {{
-  0% {{
-    opacity: 0;
-    transform: scale(0.8);
-  }}
-  100% {{
-    opacity: 1;
-    transform: scale(1);
-  }}
+  0% {{ opacity: 0; transform: scale(0.8); }}
+  100% {{ opacity: 1; transform: scale(1); }}
 }}
 .cell-active {{
   transform-box: fill-box;
@@ -144,7 +164,7 @@ def render(data):
   animation: emptyCell 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }}
 @media (prefers-reduced-motion: reduce) {{
-  .cell-active, .cell-empty {{ opacity: 1 !important; animation: none !important; filter: none !important; }}
+  .cell-active, .cell-empty {{ opacity: 1 !important; animation: none !important; }}
 }}
 """.strip()
 
@@ -154,19 +174,19 @@ def render(data):
         f'<style>{css}</style>',
         '<defs>',
         f'<linearGradient id="hbg" x1="0" y1="0" x2="0" y2="1">',
-        f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>',
+        f'<stop offset="0" stop-color="var(--bg-top)"/><stop offset="1" stop-color="var(--bg-bot)"/>',
         '</linearGradient>',
         '</defs>',
         f'<rect width="{canvas_w}" height="{canvas_h}" rx="10" fill="url(#hbg)"/>',
-        f'<rect x="0.5" y="0.5" width="{canvas_w-1}" height="{canvas_h-1}" rx="10" '
-        f'fill="none" stroke="{FRAME}" stroke-width="1.2" stroke-opacity="0.9"/>',
-        f'<line x1="0" y1="{TITLEBAR_H}" x2="{canvas_w}" y2="{TITLEBAR_H}" stroke="{FRAME}" stroke-opacity="0.5"/>',
+        f'<rect class="card-frame" x="0.6" y="0.6" width="{canvas_w-1.2:.1f}" height="{canvas_h-1.2:.1f}" rx="10" fill="none"/>',
+        f'<line class="sep-line" x1="0" y1="{TITLEBAR_H}" x2="{canvas_w}" y2="{TITLEBAR_H}" stroke-opacity="0.8"/>',
     ]
+
     # Window controls
     for i, dotcol in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
         parts.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dotcol}"/>')
 
-    parts.append(f'<text x="{canvas_w/2}" y="{TITLEBAR_H/2 + 4}" fill="{MUTED}" font-size="12" '
+    parts.append(f'<text class="txt-muted" x="{canvas_w/2}" y="{TITLEBAR_H/2 + 4}" font-size="12" '
                  f'text-anchor="middle">Contributions Activity</text>')
 
     grid_top = TITLEBAR_H + TOP_LABEL_H
@@ -174,11 +194,11 @@ def render(data):
 
     for ci, label in month_labels:
         x = grid_left + ci * STEP
-        parts.append(f'<text x="{x}" y="{TITLEBAR_H + 15}" fill="{MUTED}" font-size="10">{label}</text>')
+        parts.append(f'<text class="txt-muted" x="{x}" y="{TITLEBAR_H + 15}" font-size="10">{label}</text>')
 
     for wi, wname in [(1, "Mon"), (3, "Wed"), (5, "Fri")]:
         y = grid_top + wi * STEP + CELL * 0.78
-        parts.append(f'<text x="{PAD}" y="{y:.1f}" fill="{MUTED}" font-size="9">{wname}</text>')
+        parts.append(f'<text class="txt-muted" x="{PAD}" y="{y:.1f}" font-size="9">{wname}</text>')
 
     for ci, column in enumerate(grid):
         gx = grid_left + ci * STEP
@@ -189,25 +209,25 @@ def render(data):
             gy = grid_top + ri * STEP
             delay = ci * COL_T + ri * ROW_T
             plural = "s" if count != 1 else ""
-            cls_name = "cell-active" if lvl > 0 else "cell-empty"
+            anim_cls = "cell-active" if lvl > 0 else "cell-empty"
             parts.append(
-                f'<rect class="{cls_name}" x="{gx}" y="{gy}" width="{CELL}" height="{CELL}" rx="2.5" '
-                f'fill="{PALETTE[lvl]}" style="animation-delay:{delay:.3f}s">'
+                f'<rect class="{anim_cls} lvl-{lvl}" x="{gx}" y="{gy}" width="{CELL}" height="{CELL}" rx="2.5" '
+                f'style="animation-delay:{delay:.3f}s">'
                 f'<title>{date_s}: {count} contribution{plural}</title></rect>'
             )
 
     # Legend
     leg_y = grid_top + art_h + 8
-    leg_x = canvas_w - PAD - (len(PALETTE) * (CELL - 1) + 65)
-    parts.append(f'<text x="{leg_x}" y="{leg_y + CELL*0.8:.1f}" fill="{MUTED}" font-size="10" text-anchor="end">Less</text>')
+    leg_x = canvas_w - PAD - (len(DARK_PALETTE) * (CELL - 1) + 65)
+    parts.append(f'<text class="txt-muted" x="{leg_x}" y="{leg_y + CELL*0.8:.1f}" font-size="10" text-anchor="end">Less</text>')
     lx = leg_x + 8
-    for lvl, color in enumerate(PALETTE):
-        parts.append(f'<rect x="{lx}" y="{leg_y}" width="{CELL-1}" height="{CELL-1}" rx="2" fill="{color}"/>')
+    for lvl in range(len(DARK_PALETTE)):
+        parts.append(f'<rect class="lvl-{lvl}" x="{lx}" y="{leg_y}" width="{CELL-1}" height="{CELL-1}" rx="2"/>')
         lx += CELL
-    parts.append(f'<text x="{lx + 4}" y="{leg_y + CELL*0.8:.1f}" fill="{MUTED}" font-size="10">More</text>')
+    parts.append(f'<text class="txt-muted" x="{lx + 4}" y="{leg_y + CELL*0.8:.1f}" font-size="10">More</text>')
 
     sep_y = leg_y + CELL + 12
-    parts.append(f'<line x1="0" y1="{sep_y}" x2="{canvas_w}" y2="{sep_y}" stroke="{FRAME}" stroke-opacity="0.3"/>')
+    parts.append(f'<line class="sep-line" x1="0" y1="{sep_y}" x2="{canvas_w}" y2="{sep_y}" stroke-opacity="0.8"/>')
 
     cs = data.get("current_streak", {}).get("length", 0)
     ls = data.get("longest_streak", {}).get("length", 0)
@@ -216,18 +236,18 @@ def render(data):
     rng = data.get("range", {"start": "", "end": ""})
 
     ly = sep_y + 22
-    parts.append(f'<text x="{PAD}" y="{ly}" font-size="13" fill="{GREEN}">'
-                 f'<tspan font-weight="700">{total:,}</tspan>'
-                 f'<tspan fill="{MUTED}"> contributions in the past 12 months</tspan></text>')
-    parts.append(f'<text x="{canvas_w - PAD}" y="{ly}" font-size="11" fill="{MUTED}" text-anchor="end">'
+    parts.append(f'<text x="{PAD}" y="{ly}" font-size="13">'
+                 f'<tspan class="txt-green" font-weight="700">{total:,}</tspan>'
+                 f'<tspan class="txt-muted"> contributions in the past 12 months</tspan></text>')
+    parts.append(f'<text class="txt-muted" x="{canvas_w - PAD}" y="{ly}" font-size="11" text-anchor="end">'
                  f'{rng["start"]} &#8594; {rng["end"]}</text>')
     ly += 22
-    parts.append(f'<text x="{PAD}" y="{ly}" font-size="12" fill="{MUTED}">current streak '
-                 f'<tspan fill="{ACCENT}" font-weight="700">{cs} days</tspan>'
-                 f'<tspan fill="{MUTED}">   &#183;   longest streak </tspan>'
-                 f'<tspan fill="{ACCENT}" font-weight="700">{ls} days</tspan></text>')
-    parts.append(f'<text x="{canvas_w - PAD}" y="{ly}" font-size="11" fill="{MUTED}" text-anchor="end">'
-                 f'best day <tspan fill="{GOLD}" font-weight="700">{best["count"]}</tspan> on {best["date"]}</text>')
+    parts.append(f'<text class="txt-muted" x="{PAD}" y="{ly}" font-size="12">current streak '
+                 f'<tspan class="txt-accent" font-weight="700">{cs} days</tspan>'
+                 f'<tspan class="txt-muted">   &#183;   longest streak </tspan>'
+                 f'<tspan class="txt-accent" font-weight="700">{ls} days</tspan></text>')
+    parts.append(f'<text class="txt-muted" x="{canvas_w - PAD}" y="{ly}" font-size="11" text-anchor="end">'
+                 f'best day <tspan class="txt-gold" font-weight="700">{best["count"]}</tspan> on {best["date"]}</text>')
 
     parts.append("</svg>")
     return "".join(parts)
@@ -243,6 +263,3 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(svg)
     print(f"Wrote {OUT_PATH} ({len(svg)} bytes)")
-
-
-

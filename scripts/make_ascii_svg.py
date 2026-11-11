@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Convert an avatar or profile photo into a monochrome animated ASCII SVG portrait.
-Each row types in from left to right with a cursor wiping across, then holds/freezes.
-Phase 2: Starts at 2.0s (0.1s after Phase 1 ends), finishes typing at ~3.6s.
+Convert an avatar photo into an animated ASCII SVG portrait.
+Dual-theme adaptive: adapts typography and terminal background to Light/Dark modes.
 """
 from PIL import Image, ImageEnhance, ImageOps, ImageFilter
 import html
@@ -22,19 +21,9 @@ RAMP = " .`:-=+*cs#%@"
 
 PAD = 20
 TITLEBAR_H = 34
-ART_W = COLS * CELL_W
-ART_H = ROWS * CELL_H
 CANVAS_W = 840
 CANVAS_H = 880
 
-BG = "#0d1117"
-BG2 = "#111722"
-FRAME = "#444c56"
-TITLE_TEXT = "#7d8590"
-INK = "#c9d1d9"
-CURSOR = "#58a6ff"
-
-# Seamless start: exactly 2.0s (0.1s after Heatmap ends at 1.9s)
 BASE_START = 0.65
 TOTAL_TYPE_DUR = 0.65
 ROW_DUR = 0.05
@@ -50,58 +39,83 @@ rows_txt = []
 for y in range(ROWS):
     chars = []
     for x in range(COLS):
-        lum = px[x, y] / 255.0
-        idx = int(lum * (len(RAMP) - 1))
+        val = px[x, y]
+        idx = int(val / 256 * len(RAMP))
         idx = max(0, min(len(RAMP) - 1, idx))
         chars.append(RAMP[idx])
     rows_txt.append("".join(chars))
 
-art_top = TITLEBAR_H + 24
+css = f"""
+:root {{
+  --bg-top: #111722;
+  --bg-bot: #0d1117;
+  --frame: #30363d;
+  --sep: #30363d;
+  --title: #7d8590;
+  --ink: #c9d1d9;
+  --cursor: #58a6ff;
+}}
+@media (prefers-color-scheme: light) {{
+  :root {{
+    --bg-top: #ffffff;
+    --bg-bot: #f6f8fa;
+    --frame: #d0d7de;
+    --sep: #d8dee4;
+    --title: #656d76;
+    --ink: #1f2328;
+    --cursor: #0969da;
+  }}
+}}
+.card-frame {{ stroke: var(--frame); stroke-width: 1.2px; }}
+.sep-line {{ stroke: var(--sep); }}
+.txt-title {{ fill: var(--title); }}
+.txt-ink {{ fill: var(--ink); }}
+.cursor-bar {{ fill: var(--cursor); }}
+""".strip()
 
 parts = [
     f'<svg xmlns="http://www.w3.org/2000/svg" width="{CANVAS_W}" height="{CANVAS_H}" '
     f'viewBox="0 0 {CANVAS_W} {CANVAS_H}" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">',
-    '<defs>'
-    f'<linearGradient id="bg_ascii" x1="0" y1="0" x2="0" y2="1">'
-    f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>'
+    f'<style>{css}</style>',
+    '<defs>',
+    f'<linearGradient id="bg_ascii" x1="0" y1="0" x2="0" y2="1">',
+    f'<stop offset="0" stop-color="var(--bg-top)"/><stop offset="1" stop-color="var(--bg-bot)"/>',
     f'</linearGradient></defs>',
     f'<rect width="{CANVAS_W}" height="{CANVAS_H}" rx="12" fill="url(#bg_ascii)"/>',
-    f'<rect x="0.5" y="0.5" width="{CANVAS_W-1}" height="{CANVAS_H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1.2"/>',
-    f'<line x1="0" y1="{TITLEBAR_H}" x2="{CANVAS_W}" y2="{TITLEBAR_H}" stroke="{FRAME}"/>',
+    f'<rect class="card-frame" x="0.6" y="0.6" width="{CANVAS_W-1.2:.1f}" height="{CANVAS_H-1.2:.1f}" rx="12" fill="none"/>',
+    f'<line class="sep-line" x1="0" y1="{TITLEBAR_H}" x2="{CANVAS_W}" y2="{TITLEBAR_H}"/>',
 ]
 
 for i, dotcol in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
     parts.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dotcol}"/>')
-parts.append(f'<text x="{CANVAS_W/2}" y="{TITLEBAR_H/2 + 4}" fill="{TITLE_TEXT}" font-size="12" text-anchor="middle">ASCII Portrait</text>')
+parts.append(f'<text class="txt-title" x="{CANVAS_W/2}" y="{TITLEBAR_H/2 + 4}" font-size="12" text-anchor="middle">ASCII Portrait</text>')
 
-font_size = CELL_H * 0.90
-for ry, line in enumerate(rows_txt):
-    y = art_top + ry * CELL_H + CELL_H * 0.74
-    row_y = art_top + ry * CELL_H
-    delay = BASE_START + (ry * STAGGER)
-    safe = html.escape(line)
-    text = (f'<text xml:space="preserve" x="{PAD}" y="{y:.1f}" fill="{INK}" '
-            f'font-size="{font_size:.1f}" textLength="{ART_W}" lengthAdjust="spacing">{safe}</text>')
+for y in range(ROWS):
+    clip_id = f"r{y}"
+    row_y = TITLEBAR_H + PAD + y * CELL_H
+    t_start = BASE_START + y * STAGGER
+    t_end = t_start + ROW_DUR
+
+    parts.append(f'<clipPath id="{clip_id}">')
+    parts.append(f'<rect x="{PAD}" y="{row_y:.1f}" height="{CELL_H:.1f}" width="0">')
+    parts.append(f'<animate attributeName="width" from="0" to="{ART_W_TARGET:.1f}" begin="{t_start:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>')
+    parts.append('</rect></clipPath>')
+
+    escaped = html.escape(rows_txt[y])
+    parts.append(f'<g clip-path="url(#{clip_id})">')
+    parts.append(f'<text class="txt-ink" xml:space="preserve" x="{PAD}" y="{row_y + CELL_H * 0.74:.1f}" font-size="{CELL_H * 0.9:.1f}" textLength="{ART_W_TARGET:.1f}" lengthAdjust="spacing">{escaped}</text>')
+    parts.append('</g>')
 
     parts.append(
-        f'<clipPath id="r{ry}"><rect x="{PAD}" y="{row_y:.1f}" height="{CELL_H}" width="0">'
-        f'<animate attributeName="width" from="0" to="{ART_W}" begin="{delay:.3f}s" '
-        f'dur="{ROW_DUR:.2f}s" fill="freeze"/></rect></clipPath>'
-    )
-    parts.append(f'<g clip-path="url(#r{ry})">{text}</g>')
-    parts.append(
-        f'<rect y="{row_y+1:.1f}" width="{CELL_W*2}" height="{CELL_H-1}" fill="{CURSOR}" opacity="0">'
-        f'<animate attributeName="x" from="{PAD}" to="{PAD+ART_W}" begin="{delay:.3f}s" '
-        f'dur="{ROW_DUR:.2f}s" fill="freeze"/>'
-        f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
-        f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
+        f'<rect class="cursor-bar" y="{row_y + 1:.1f}" width="{CELL_W:.1f}" height="{CELL_H - 1:.1f}" opacity="0">'
+        f'<animate attributeName="x" from="{PAD}" to="{PAD + ART_W_TARGET:.1f}" begin="{t_start:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
+        f'<set attributeName="opacity" to="0.85" begin="{t_start:.3f}s"/>'
+        f'<set attributeName="opacity" to="0" begin="{t_end:.3f}s"/>'
+        f'</rect>'
     )
 
-parts.append("</svg>")
+parts.append('</svg>')
 svg = "".join(parts)
 with open(OUT, "w", encoding="utf-8") as f:
     f.write(svg)
 print(f"wrote {OUT} ({len(svg)} bytes)")
-
-
-

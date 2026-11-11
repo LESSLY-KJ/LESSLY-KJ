@@ -1,4 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="860" height="260" viewBox="0 0 860 260" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"><style>
+:root {
+  --bg-top: #111722;
+  --tile-bg: #161b22;
+  --frame: #30363d;
+  --muted: #8b949e;
+  --text: #e6edf3;
+  --cyan: #58a6ff;
+  --green: #39d353;
+  --gold: #f2cc60;
+  --purple: #bc8cff;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-top: #ffffff;
+    --tile-bg: #f6f8fa;
+    --frame: #d0d7de;
+    --muted: #656d76;
+    --text: #1f2328;
+    --cyan: #0969da;
+    --green: #1a7f37;
+    --gold: #9a6700;
+    --purple: #8250df;
+  }
+}
+.tile-box { fill: var(--tile-bg); stroke: var(--frame); stroke-width: 1.2px; }
+.txt-muted { fill: var(--muted); }
+.txt-title { fill: var(--text); }
+.tag-cyan { fill: var(--cyan); }
+.tag-green { fill: var(--green); }
+.tag-gold { fill: var(--gold); }
+.tag-purple { fill: var(--purple); }
+
 .tile {
   opacity: 0;
   animation: tileSlide 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -16,4 +48,4 @@
 @media (prefers-reduced-motion: reduce) {
   .tile { opacity: 1 !important; transform: none !important; animation: none !important; }
 }
-</style><defs><linearGradient id="tile_bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#111722"/><stop offset="1" stop-color="#161b22"/></linearGradient></defs><g class="tile" style="animation-delay: 2.20s"><rect x="12.0" y="12.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#444c56" stroke-width="1.2"/><text x="30.0" y="40.0" font-size="14" font-weight="700"><tspan fill="#e6edf3">📦 Ecommerce-big-Data-Analysis</tspan></text><rect x="30.0" y="50.0" width="124.5" height="18" rx="4" fill="#58a6ff" fill-opacity="0.12" stroke="#58a6ff" stroke-opacity="0.4" stroke-width="1.2"/><text x="37.0" y="63.0" fill="#58a6ff" font-size="9" font-weight="700">PYTHON • BIG DATA</text><text x="30.0" y="88.0" fill="#8b949e" font-size="11" width="375.0">Data pipeline &amp; consumer transaction analytics evaluating sales patterns and high-volume data.</text></g><g class="tile" style="animation-delay: 2.26s"><rect x="437.0" y="12.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#444c56" stroke-width="1.2"/><text x="455.0" y="40.0" font-size="14" font-weight="700"><tspan fill="#e6edf3">🤝 NGO-Data-Analysis</tspan></text><rect x="455.0" y="50.0" width="98.5" height="18" rx="4" fill="#39d353" fill-opacity="0.12" stroke="#39d353" stroke-opacity="0.4" stroke-width="1.2"/><text x="462.0" y="63.0" fill="#39d353" font-size="9" font-weight="700">EDA • METRICS</text><text x="455.0" y="88.0" fill="#8b949e" font-size="11" width="375.0">Exploratory data analysis &amp; socioeconomic indicators modeled for non-profit operational decisions.</text></g><g class="tile" style="animation-delay: 2.32s"><rect x="12.0" y="137.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#444c56" stroke-width="1.2"/><text x="30.0" y="165.0" font-size="14" font-weight="700"><tspan fill="#e6edf3">📊 Titanic-Excel-Analysis</tspan></text><rect x="30.0" y="175.0" width="137.5" height="18" rx="4" fill="#f2cc60" fill-opacity="0.12" stroke="#f2cc60" stroke-opacity="0.4" stroke-width="1.2"/><text x="37.0" y="188.0" fill="#f2cc60" font-size="9" font-weight="700">EXCEL • ML • PYTHON</text><text x="30.0" y="213.0" fill="#8b949e" font-size="11" width="375.0">Structured exploratory data analysis, statistical modeling, and survival classification insights.</text></g><g class="tile" style="animation-delay: 2.38s"><rect x="437.0" y="137.0" width="411.0" height="111.0" rx="10" fill="url(#tile_bg)" stroke="#444c56" stroke-width="1.2"/><text x="455.0" y="165.0" font-size="14" font-weight="700"><tspan fill="#e6edf3">📫 Connect With Me</tspan></text><rect x="455.0" y="175.0" width="176.5" height="18" rx="4" fill="#bc8cff" fill-opacity="0.12" stroke="#bc8cff" stroke-opacity="0.4" stroke-width="1.2"/><text x="462.0" y="188.0" fill="#bc8cff" font-size="9" font-weight="700">NETWORKING • OPEN TO WORK</text><text x="455.0" y="213.0" fill="#8b949e" font-size="11" width="375.0">Always open to data analyst collaborations, predictive modeling projects, and opportunities.</text></g></svg>
+</style><g class="tile" style="animation-delay: 2.20s"><rect class="tile-box" x="12.0" y="12.0" width="411.0" height="111.0" rx="10"/><text x="30.0" y="40.0" font-size="14" font-weight="700"><tspan class="txt-title">📦 Ecommerce-big-Data-Analysis</tspan></text><text class="tag-cyan" x="30.0" y="60.0" font-size="10" font-weight="700" letter-spacing="0.5">PYTHON • BIG DATA</text><text class="txt-muted" x="30.0" y="86.0" font-size="11.5"><tspan x="30.0" dy="0">Data pipeline &amp;amp; consumer transaction analytics</tspan><tspan x="30.0" dy="16">evaluating sales patterns and high-volume data.</tspan></text></g><g class="tile" style="animation-delay: 2.26s"><rect class="tile-box" x="437.0" y="12.0" width="411.0" height="111.0" rx="10"/><text x="455.0" y="40.0" font-size="14" font-weight="700"><tspan class="txt-title">🤝 NGO-Data-Analysis</tspan></text><text class="tag-green" x="455.0" y="60.0" font-size="10" font-weight="700" letter-spacing="0.5">EDA • METRICS</text><text class="txt-muted" x="455.0" y="86.0" font-size="11.5"><tspan x="455.0" dy="0">Exploratory data analysis &amp;amp; socioeconomic</tspan><tspan x="455.0" dy="16">indicators modeled for non-profit operational decisions.</tspan></text></g><g class="tile" style="animation-delay: 2.32s"><rect class="tile-box" x="12.0" y="137.0" width="411.0" height="111.0" rx="10"/><text x="30.0" y="165.0" font-size="14" font-weight="700"><tspan class="txt-title">📊 Titanic-Excel-Analysis</tspan></text><text class="tag-gold" x="30.0" y="185.0" font-size="10" font-weight="700" letter-spacing="0.5">EXCEL • ML • PYTHON</text><text class="txt-muted" x="30.0" y="211.0" font-size="11.5"><tspan x="30.0" dy="0">Structured exploratory data analysis, statistical</tspan><tspan x="30.0" dy="16">modeling, and survival classification insights.</tspan></text></g><g class="tile" style="animation-delay: 2.38s"><rect class="tile-box" x="437.0" y="137.0" width="411.0" height="111.0" rx="10"/><text x="455.0" y="165.0" font-size="14" font-weight="700"><tspan class="txt-title">📫 Connect With Me</tspan></text><text class="tag-purple" x="455.0" y="185.0" font-size="10" font-weight="700" letter-spacing="0.5">NETWORKING • OPEN TO WORK</text><text class="txt-muted" x="455.0" y="211.0" font-size="11.5"><tspan x="455.0" dy="0">Always open to data analyst</tspan><tspan x="455.0" dy="16">collaborations, predictive modeling projects, and opportunities.</tspan></text></g></svg>
