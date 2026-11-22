@@ -2,7 +2,10 @@
 """
 Renders data/contributions.json as a GitHub contribution heatmap SVG:
 - Dual-theme adaptive: adapts seamlessly between Dark Mode and Light Mode via CSS prefers-color-scheme.
-- Starts immediately at 0.0s, completes by ~0.80s.
+- Layer 1 (0.0s to 1.0s):
+  - In the heatmap, green dots ignite with a sharp intense high-pitch neon glow at the microsecond
+    they appear, and immediately return to their true authentic GitHub colors.
+  - Finishes across all columns at exactly 1.0s.
 """
 import datetime
 import json
@@ -24,9 +27,10 @@ LEFT_LABEL_W = 32
 TOP_LABEL_H = 22
 TITLEBAR_H = 34
 
-COL_T = 0.012
-ROW_T = 0.006
-CELL_DUR = 0.20
+# 52 weeks * 0.015 + 6 * 0.008 + 0.18 = 0.99s (resolves cleanly at 1.0s)
+COL_T = 0.015
+ROW_T = 0.008
+CELL_DUR = 0.18
 
 
 def level_for(count):
@@ -107,6 +111,7 @@ def render(data):
   --l3: #26a641;
   --l4: #39d353;
   --l5: #56e370;
+  --flash-color: #56e370;
 }}
 @media (prefers-color-scheme: light) {{
   :root {{
@@ -125,6 +130,7 @@ def render(data):
     --l3: #30a14e;
     --l4: #216e39;
     --l5: #114f24;
+    --flash-color: #39d353;
   }}
 }}
 .card-frame {{ stroke: var(--frame); stroke-width: 1.2px; }}
@@ -142,29 +148,48 @@ def render(data):
 .lvl-4 {{ fill: var(--l4); }}
 .lvl-5 {{ fill: var(--l5); }}
 
-@keyframes cellGlow {{
-  0% {{ opacity: 0; transform: scale(0.6); }}
-  40% {{ opacity: 1; transform: scale(1.15); }}
-  100% {{ opacity: 1; transform: scale(1); }}
+/* Intense microsecond high-pitch flash then immediate settlement to true color */
+@keyframes igniteDot {{
+  0% {{
+    opacity: 0;
+    transform: scale(0.3);
+    fill: var(--flash-color) !important;
+    filter: drop-shadow(0 0 10px var(--flash-color)) brightness(3);
+  }}
+  15% {{
+    opacity: 1;
+    transform: scale(1.4);
+    fill: var(--flash-color) !important;
+    filter: drop-shadow(0 0 12px var(--flash-color)) brightness(3.5);
+  }}
+  40% {{
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 3px var(--flash-color)) brightness(1.4);
+  }}
+  100% {{
+    opacity: 1;
+    transform: scale(1);
+    filter: none;
+  }}
 }}
 @keyframes emptyCell {{
-  0% {{ opacity: 0; transform: scale(0.8); }}
+  0% {{ opacity: 0; transform: scale(0.7); }}
   100% {{ opacity: 1; transform: scale(1); }}
 }}
 .cell-active {{
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: cellGlow {CELL_DUR:.2f}s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: igniteDot {CELL_DUR:.2f}s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }}
 .cell-empty {{
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: emptyCell 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: emptyCell 0.25s ease-out forwards;
 }}
 @media (prefers-reduced-motion: reduce) {{
-  .cell-active, .cell-empty {{ opacity: 1 !important; animation: none !important; }}
+  .cell-active, .cell-empty {{ opacity: 1 !important; animation: none !important; filter: none !important; }}
 }}
 """.strip()
 

@@ -7,11 +7,11 @@
 
 <br><br>
 
-<!-- Dual side-by-side terminal windows: Animated ASCII portrait + Streak & Bar Chart stats -->
+<!-- Dual side-by-side terminal windows: End-to-End Pipeline + Streak & Bar Chart stats -->
 <table border="0" cellspacing="0" cellpadding="0" style="border:none; border-collapse:collapse;">
   <tr style="border:none;">
     <td width="50%" valign="top" style="border:none; padding:0 6px 0 0;">
-      <a href="#contributions"><img src="./avatar-ascii.svg" width="420" alt="ASCII Portrait - Self Typing" /></a>
+      <a href="#contributions"><img src="./pipeline-card.svg" width="420" alt="Analytics Methodology & Pipeline" /></a>
     </td>
     <td width="50%" valign="top" style="border:none; padding:0 0 0 6px;">
       <a href="#contributions"><img src="./stats.svg" width="420" alt="GitHub Streak and Contribution Stats" /></a>

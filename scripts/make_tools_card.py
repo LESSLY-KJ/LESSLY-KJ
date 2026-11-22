@@ -33,7 +33,7 @@ def fetch_b64(url):
     return "data:image/svg+xml;base64," + base64.b64encode(data).decode("utf-8")
 
 def render_tools_card():
-    BASE_START = 1.80
+    BASE_START = 2.15
     STAGGER = 0.04
 
     css = """
@@ -139,3 +139,4 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+

@@ -91,7 +91,7 @@ def render_info_card():
     start_y = TITLEBAR_H + 28
     line_h = 24
     curr_y = start_y
-    delay = 1.35
+    delay = 1.70
 
     for item in lines:
         kind = item[0]
@@ -150,3 +150,4 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+

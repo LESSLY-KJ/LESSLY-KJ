@@ -45,8 +45,8 @@ PROJECTS = [
 ]
 
 def render_projects_card():
-    BASE_START = 2.20
-    STAGGER = 0.06
+    BASE_START = 2.60
+    STAGGER = 0.04
 
     css = """
 :root {
@@ -83,7 +83,7 @@ def render_projects_card():
 
 .tile {
   opacity: 0;
-  animation: tileSlide 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: tileSlide 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes tileSlide {
   0% {
@@ -156,3 +156,4 @@ if __name__ == "__main__":
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Wrote {OUT_PATH} ({len(content)} bytes)")
+

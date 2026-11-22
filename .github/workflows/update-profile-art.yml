@@ -32,11 +32,14 @@ jobs:
       - name: Render stats card SVG
         run: python scripts/render_stats_svg.py
 
+      - name: Render pipeline workflow card SVG
+        run: python scripts/make_pipeline_card.py
+
       - name: Commit updated art
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: refresh contribution graph [skip ci]"
-          file_pattern: "data/contributions.json contrib-heatmap.svg stats.svg"
+          file_pattern: "data/contributions.json contrib-heatmap.svg stats.svg pipeline-card.svg"
           commit_user_name: github-actions[bot]
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
           commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
