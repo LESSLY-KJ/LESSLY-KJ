@@ -3,7 +3,8 @@
 Renders streak tiles and monthly chart card as animated SVG:
 - Dark/Light dual-theme adaptive.
 - Proportional dimensions (840x980) matching pipeline-card.svg.
-- Increased monthly bar chart length & height for maximum visual impact.
+- Larger, prominent numbers and titles for high readability.
+- Generous monthly bar chart length & height.
 """
 import datetime
 import json
@@ -16,12 +17,12 @@ OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, "..", "stats.svg"
 
 W, H = 840, 980
 PAD = 20
-TITLEBAR_H = 34
+TITLEBAR_H = 36
 COLS, ROWS = 2, 3
 GAP = 16
 TILE_W = (W - PAD * 2 - GAP * (COLS - 1)) / COLS
-TILE_H = 135
-TILES_TOP = TITLEBAR_H + PAD + 6
+TILE_H = 136
+TILES_TOP = TITLEBAR_H + PAD + 4
 CHART_TOP = TILES_TOP + ROWS * TILE_H + (ROWS - 1) * GAP + GAP
 
 BASE_START = 1.00
@@ -116,7 +117,7 @@ css = f"""
 
 parts = [
     f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" '
-    f'font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">',
+    f'font-family="-apple-system, BlinkMacSystemFont, \'Segoe UI\', Helvetica, Arial, sans-serif">',
     f'<style>{css}</style>',
     f'<defs><linearGradient id="bg_stats" x1="0" y1="0" x2="0" y2="1">',
     f'<stop offset="0" stop-color="var(--bg-top)"/><stop offset="1" stop-color="var(--bg-bot)"/></linearGradient></defs>',
@@ -126,8 +127,8 @@ parts = [
 ]
 
 for i, dot in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
-    parts.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dot}"/>')
-parts.append(f'<text class="txt-muted" x="{W/2}" y="{TITLEBAR_H/2 + 4}" font-size="12" text-anchor="middle">Contribution Insights</text>')
+    parts.append(f'<circle cx="{PAD + 4 + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dot}"/>')
+parts.append(f'<text class="txt-muted" x="{W/2}" y="{TITLEBAR_H/2 + 5}" font-size="13" font-weight="600" text-anchor="middle">Contribution Insights</text>')
 
 for i, (label, value, suffix, caption, col_type) in enumerate(tiles):
     col, row = i % COLS, i // COLS
@@ -140,9 +141,9 @@ for i, (label, value, suffix, caption, col_type) in enumerate(tiles):
 
     parts.append(f'<g class="t" style="animation-delay:{start:.2f}s">')
     parts.append(f'<rect class="tile-box" x="{x:.1f}" y="{y}" width="{TILE_W:.1f}" height="{TILE_H}" rx="10"/>')
-    parts.append(f'<text class="txt-muted" x="{x+22:.1f}" y="{y+34}" font-size="17" font-weight="700">{label.upper()}</text>')
+    parts.append(f'<text class="txt-muted" x="{x+22:.1f}" y="{y+34}" font-size="18" font-weight="800" letter-spacing="0.4">{label.upper()}</text>')
 
-    num_y = y + 88
+    num_y = y + 89
     for k in range(1, FRAMES + 1):
         p = k / FRAMES
         v = value * (1 - (1 - p) ** 3)
@@ -152,20 +153,19 @@ for i, (label, value, suffix, caption, col_type) in enumerate(tiles):
         if k < FRAMES:
             anim += f'<set attributeName="opacity" to="0" begin="{t_off:.3f}s"/>'
         parts.append(
-            f'<text class="{num_class}" x="{x+22:.1f}" y="{num_y}" opacity="0" font-size="44" font-weight="700">'
-            f'{fmt(v, value)}<tspan class="txt-muted" font-size="19" font-weight="400">{suffix}</tspan>'
+            f'<text class="{num_class}" x="{x+22:.1f}" y="{num_y}" opacity="0" font-size="46" font-weight="800">'
+            f'{fmt(v, value)}<tspan class="txt-muted" font-size="20" font-weight="500">{suffix}</tspan>'
             f'{anim}</text>'
         )
-    parts.append(f'<text class="txt-muted" x="{x+22:.1f}" y="{y+118}" font-size="15">{caption}</text>')
+    parts.append(f'<text class="txt-muted" x="{x+22:.1f}" y="{y+119}" font-size="16" font-weight="500">{caption}</text>')
     parts.append('</g>')
 
 monthly = data.get("monthly", [])
 chart_x, chart_w = PAD, W - PAD * 2
-# Substantially increased chart height and bar vertical length
 chart_h = H - PAD - CHART_TOP
 parts.append(f'<g class="t" style="animation-delay:{BAR_START - 0.10:.2f}s">')
 parts.append(f'<rect class="tile-box" x="{chart_x}" y="{CHART_TOP}" width="{chart_w}" height="{chart_h}" rx="10"/>')
-parts.append(f'<text class="txt-muted" x="{chart_x+22}" y="{CHART_TOP+36}" font-size="18" font-weight="700">MONTHLY ACTIVITY</text>')
+parts.append(f'<text class="txt-muted" x="{chart_x+22}" y="{CHART_TOP+36}" font-size="19" font-weight="800" letter-spacing="0.4">MONTHLY ACTIVITY</text>')
 parts.append('</g>')
 
 plot_top = CHART_TOP + 56
@@ -189,10 +189,10 @@ for idx, m in enumerate(monthly):
         f'<rect class="b {fill_cls}" x="{bx:.1f}" y="{by:.1f}" width="{bar_w:.1f}" height="{h_bar:.1f}" rx="3.5" '
         f'style="animation-delay:{bar_delay:.2f}s"/>'
     )
-    parts.append(f'<text class="txt-muted" x="{bx + bar_w/2:.1f}" y="{plot_baseline + 28}" font-size="14.5" font-weight="600" text-anchor="middle">{m_name}</text>')
+    parts.append(f'<text class="txt-muted" x="{bx + bar_w/2:.1f}" y="{plot_baseline + 30}" font-size="15.5" font-weight="700" text-anchor="middle">{m_name}</text>')
     if val > 0:
         parts.append(f'<text class="t txt-ink" style="animation-delay:{bar_delay + 0.25:.2f}s" '
-                     f'x="{bx + bar_w/2:.1f}" y="{by - 10:.1f}" font-size="15" font-weight="700" text-anchor="middle">{val}</text>')
+                     f'x="{bx + bar_w/2:.1f}" y="{by - 10:.1f}" font-size="16" font-weight="800" text-anchor="middle">{val}</text>')
 
 parts.append("</svg>")
 svg = "".join(parts)
