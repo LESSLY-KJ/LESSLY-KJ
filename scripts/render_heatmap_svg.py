@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 """
 Renders data/contributions.json as a GitHub contribution heatmap SVG:
-- Dual-theme adaptive: adapts seamlessly between Dark Mode and Light Mode via CSS prefers-color-scheme.
-- Layer 1 (0.0s to 1.0s):
-  - In the heatmap, green dots ignite with a sharp intense high-pitch neon glow at the microsecond
-    they appear, and immediately return to their true authentic GitHub colors.
-  - Finishes across all columns at exactly 1.0s.
+- Keeps the exact vibrant high-shine explosion, scale bloom, and shockwave aura ring animation,
+  but powered by the exact TOP COMMIT TIER GREEN (#56e370 in dark mode, #216e39 in light mode)!
 """
 import datetime
 import json
@@ -27,10 +24,9 @@ LEFT_LABEL_W = 32
 TOP_LABEL_H = 22
 TITLEBAR_H = 34
 
-# 52 weeks * 0.015 + 6 * 0.008 + 0.18 = 0.99s (resolves cleanly at 1.0s)
 COL_T = 0.015
 ROW_T = 0.008
-CELL_DUR = 0.18
+CELL_DUR = 0.32
 
 
 def level_for(count):
@@ -94,6 +90,7 @@ def render(data):
     stats_h = 82
     canvas_h = TITLEBAR_H + TOP_LABEL_H + art_h + stats_h + PAD
 
+    # Top commit tier color: #56e370 (Dark) and #216e39 / #30a14e (Light)
     css = f"""
 :root {{
   --bg-top: #0e1522;
@@ -111,7 +108,7 @@ def render(data):
   --l3: #26a641;
   --l4: #39d353;
   --l5: #56e370;
-  --flash-color: #56e370;
+  --glow-high: #56e370;
 }}
 @media (prefers-color-scheme: light) {{
   :root {{
@@ -130,7 +127,7 @@ def render(data):
     --l3: #30a14e;
     --l4: #216e39;
     --l5: #114f24;
-    --flash-color: #39d353;
+    --glow-high: #216e39;
   }}
 }}
 .card-frame {{ stroke: var(--frame); stroke-width: 1.2px; }}
@@ -148,39 +145,83 @@ def render(data):
 .lvl-4 {{ fill: var(--l4); }}
 .lvl-5 {{ fill: var(--l5); }}
 
-/* Intense microsecond high-pitch flash then immediate settlement to true color */
-@keyframes igniteDot {{
+/* Intense High Shining Glow in TOP COMMIT TIER GREEN (#56e370) */
+@keyframes highShineGlow {{
   0% {{
     opacity: 0;
-    transform: scale(0.3);
-    fill: var(--flash-color) !important;
-    filter: drop-shadow(0 0 10px var(--flash-color)) brightness(3);
+    transform: scale(0.2);
+    fill: #ffffff !important;
+    stroke: var(--glow-high);
+    stroke-width: 4px;
+    filter: drop-shadow(0 0 12px var(--glow-high)) drop-shadow(0 0 24px var(--glow-high)) brightness(3);
   }}
-  15% {{
+  20% {{
     opacity: 1;
-    transform: scale(1.4);
-    fill: var(--flash-color) !important;
-    filter: drop-shadow(0 0 12px var(--flash-color)) brightness(3.5);
+    transform: scale(1.75);
+    fill: var(--glow-high) !important;
+    stroke: #ffffff;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 16px var(--glow-high)) drop-shadow(0 0 28px var(--glow-high)) brightness(3.5);
   }}
-  40% {{
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 3px var(--flash-color)) brightness(1.4);
+  45% {{
+    transform: scale(1.2);
+    fill: var(--glow-high) !important;
+    stroke: var(--glow-high);
+    stroke-width: 1.5px;
+    filter: drop-shadow(0 0 6px var(--glow-high)) brightness(1.6);
   }}
   100% {{
     opacity: 1;
     transform: scale(1);
+    stroke: none;
     filter: none;
   }}
 }}
+
+/* Halo shockwave expanding ring in TOP COMMIT TIER GREEN */
+@keyframes auraRing {{
+  0% {{
+    opacity: 0;
+    transform: scale(0.4);
+    stroke: var(--glow-high);
+    stroke-width: 3px;
+  }}
+  25% {{
+    opacity: 0.95;
+    transform: scale(2.4);
+    stroke: var(--glow-high);
+    stroke-width: 2px;
+  }}
+  60% {{
+    opacity: 0;
+    transform: scale(3.4);
+    stroke: var(--glow-high);
+    stroke-width: 0.5px;
+  }}
+  100% {{
+    opacity: 0;
+    transform: scale(3.5);
+  }}
+}}
+
 @keyframes emptyCell {{
   0% {{ opacity: 0; transform: scale(0.7); }}
   100% {{ opacity: 1; transform: scale(1); }}
 }}
+
 .cell-active {{
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: igniteDot {CELL_DUR:.2f}s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: highShineGlow {CELL_DUR:.2f}s cubic-bezier(0.12, 1, 0.28, 1) forwards;
+}}
+.cell-aura {{
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  fill: none;
+  pointer-events: none;
+  animation: auraRing {CELL_DUR + 0.10:.2f}s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
 }}
 .cell-empty {{
   transform-box: fill-box;
@@ -189,7 +230,7 @@ def render(data):
   animation: emptyCell 0.25s ease-out forwards;
 }}
 @media (prefers-reduced-motion: reduce) {{
-  .cell-active, .cell-empty {{ opacity: 1 !important; animation: none !important; filter: none !important; }}
+  .cell-active, .cell-empty, .cell-aura {{ opacity: 1 !important; animation: none !important; filter: none !important; stroke: none !important; }}
 }}
 """.strip()
 
@@ -234,12 +275,25 @@ def render(data):
             gy = grid_top + ri * STEP
             delay = ci * COL_T + ri * ROW_T
             plural = "s" if count != 1 else ""
-            anim_cls = "cell-active" if lvl > 0 else "cell-empty"
-            parts.append(
-                f'<rect class="{anim_cls} lvl-{lvl}" x="{gx}" y="{gy}" width="{CELL}" height="{CELL}" rx="2.5" '
-                f'style="animation-delay:{delay:.3f}s">'
-                f'<title>{date_s}: {count} contribution{plural}</title></rect>'
-            )
+
+            if lvl > 0:
+                # Shockwave aura ring in top commit color
+                parts.append(
+                    f'<rect class="cell-aura" x="{gx}" y="{gy}" width="{CELL}" height="{CELL}" rx="3" '
+                    f'style="animation-delay:{delay:.3f}s"/>'
+                )
+                # Main high shining dot in top commit color
+                parts.append(
+                    f'<rect class="cell-active lvl-{lvl}" x="{gx}" y="{gy}" width="{CELL}" height="{CELL}" rx="2.5" '
+                    f'style="animation-delay:{delay:.3f}s">'
+                    f'<title>{date_s}: {count} contribution{plural}</title></rect>'
+                )
+            else:
+                parts.append(
+                    f'<rect class="cell-empty lvl-{lvl}" x="{gx}" y="{gy}" width="{CELL}" height="{CELL}" rx="2.5" '
+                    f'style="animation-delay:{delay:.3f}s">'
+                    f'<title>{date_s}: {count} contribution{plural}</title></rect>'
+                )
 
     # Legend
     leg_y = grid_top + art_h + 8

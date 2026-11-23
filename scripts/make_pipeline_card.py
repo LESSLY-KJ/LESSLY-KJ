@@ -2,9 +2,9 @@
 """
 Generates an animated End-to-End Analytics Workflow Pipeline SVG:
 - Dark/Light dual-theme adaptive (matching the right stats card).
-- Starts exactly at 1.0s (right after Phase 1 Heatmap finishes at 1.0s).
-- Casually and smoothly cascades its 4 pipeline stages between 1.0s and 1.8s.
+- Strict XML compliance with html.escape on all strings.
 """
+import html
 import os
 
 OUT_PATH = os.path.join(os.path.dirname(__file__), "..", "pipeline-card.svg")
@@ -150,8 +150,8 @@ def render_pipeline_card():
         f'<line class="sep-line" x1="0" y1="{TITLEBAR_H}" x2="{W}" y2="{TITLEBAR_H}"/>',
     ]
 
-    for i, dot in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
-        parts.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dot}"/>')
+    for i, dotcol in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
+        parts.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dotcol}"/>')
     parts.append(f'<text class="txt-muted" x="{W/2}" y="{TITLEBAR_H/2 + 4}" font-size="12" text-anchor="middle">Analytics Methodology &amp; Pipeline</text>')
 
     # Top Header within card
@@ -166,6 +166,12 @@ def render_pipeline_card():
     for idx, s in enumerate(STAGES):
         delay = BASE_START + idx * STAGE_STAGGER
         box_y = s["y"]
+        step_txt = html.escape(s["step"])
+        name_txt = html.escape(s["name"])
+        desc_txt = html.escape(s["desc"])
+        tag_txt = html.escape(s["tag"])
+        badge_txt = html.escape(s["badge"])
+
         parts.append(f'<g class="fade-in" style="animation-delay: {delay:.2f}s">')
         parts.append(f'<rect class="tile-box" x="{PAD}" y="{box_y}" width="{card_box_w}" height="{card_box_h}" rx="10"/>')
 
@@ -177,38 +183,38 @@ def render_pipeline_card():
         # Step + Title
         tx = PAD + 76
         parts.append(f'<text x="{tx}" y="{box_y + 36}" font-size="15" font-weight="700">')
-        parts.append(f'<tspan class="tag-{s["tag_type"]}">{s["step"]}</tspan>')
+        parts.append(f'<tspan class="tag-{s["tag_type"]}">{step_txt}</tspan>')
         parts.append(f'<tspan class="txt-muted">  |  </tspan>')
-        parts.append(f'<tspan class="txt-ink">{s["name"]}</tspan>')
+        parts.append(f'<tspan class="txt-ink">{name_txt}</tspan>')
         parts.append('</text>')
 
         # Description
-        parts.append(f'<text class="txt-muted" x="{tx}" y="{box_y + 68}" font-size="12.5">{s["desc"]}</text>')
+        parts.append(f'<text class="txt-muted" x="{tx}" y="{box_y + 68}" font-size="12.5">{desc_txt}</text>')
 
         # Tag
-        parts.append(f'<text class="tag-{s["tag_type"]}" x="{tx}" y="{box_y + 104}" font-size="11" font-weight="700" letter-spacing="0.5">{s["tag"]}</text>')
+        parts.append(f'<text class="tag-{s["tag_type"]}" x="{tx}" y="{box_y + 104}" font-size="11" font-weight="700" letter-spacing="0.5">{tag_txt}</text>')
 
         # Badge
         badge_w, badge_h = 230, 32
         badge_x = PAD + card_box_w - badge_w - 20
         badge_y = box_y + 82
         parts.append(f'<rect class="badge-{s["badge_type"]}" x="{badge_x}" y="{badge_y}" width="{badge_w}" height="{badge_h}" rx="6"/>')
-        parts.append(f'<text class="tag-{s["badge_type"]}" x="{badge_x + badge_w/2}" y="{badge_y + 20}" font-size="12" font-weight="700" text-anchor="middle">{s["badge"]}</text>')
+        parts.append(f'<text class="tag-{s["badge_type"]}" x="{badge_x + badge_w/2}" y="{badge_y + 20}" font-size="12" font-weight="700" text-anchor="middle">{badge_txt}</text>')
 
         parts.append('</g>')
 
-        # Flow arrow to next stage
+        # Flow indicator to next stage
         if idx < len(STAGES) - 1:
             arrow_y = box_y + card_box_h + 8
             parts.append(f'<g class="fade-in" style="animation-delay: {delay + 0.05:.2f}s">')
-            parts.append(f'<text class="txt-muted" x="{PAD + 40}" y="{arrow_y + 14}" font-size="18" text-anchor="middle">↓</text>')
+            parts.append(f'<text class="txt-muted" x="{PAD + 40}" y="{arrow_y + 14}" font-size="18" text-anchor="middle">&#8595;</text>')
             parts.append('</g>')
 
     # Bottom footer line
     foot_y = 820
     parts.append(f'<g class="fade-in" style="animation-delay: {BASE_START + 0.60:.2f}s">')
     parts.append(f'<line class="sep-line" x1="{PAD}" y1="{foot_y}" x2="{W - PAD}" y2="{foot_y}"/>')
-    parts.append(f'<text class="txt-green" x="{W/2}" y="{foot_y + 30}" font-size="13" font-weight="700" text-anchor="middle">RESULT: Clean Code  •  Validated Science  •  Actionable Business Decisions</text>')
+    parts.append(f'<text class="txt-green" x="{W/2}" y="{foot_y + 30}" font-size="13" font-weight="700" text-anchor="middle">RESULT: Clean Code  &#8226;  Validated Science  &#8226;  Actionable Business Decisions</text>')
     parts.append('</g>')
 
     parts.append('</svg>')
