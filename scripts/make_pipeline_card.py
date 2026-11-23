@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 Generates an animated End-to-End Analytics Workflow Pipeline SVG:
-- Dark/Light dual-theme adaptive (matching the right stats card).
-- Strict XML compliance with html.escape on all strings.
+- Dark/Light dual-theme adaptive.
+- Proportional dimensions (840x980) matching stats.svg with zero stretching.
+- Increased font sizes, spacious stage cards, perfectly padded text that never overflows.
 """
 import html
 import os
@@ -10,17 +11,17 @@ import os
 OUT_PATH = os.path.join(os.path.dirname(__file__), "..", "pipeline-card.svg")
 
 W = 840
-H = 880
-PAD = 20
+H = 980
+PAD = 22
 TITLEBAR_H = 34
 
 STAGES = [
     {
         "step": "STAGE 01",
         "name": "DATA INGESTION & AUDIT",
-        "tag": "SQL • PANDAS • ETL",
+        "tag": "SQL • PANDAS • ETL PIPELINES",
         "tag_type": "accent",
-        "desc": "Connecting to databases, querying raw tables, handling missing values, and detecting anomalies.",
+        "desc": "Connecting to databases, querying tables, resolving missing values & schema anomalies.",
         "icon": "1",
         "badge": "1.2M+ Records Cleaned",
         "badge_type": "green",
@@ -28,36 +29,36 @@ STAGES = [
     },
     {
         "step": "STAGE 02",
-        "name": "EXPLORATORY DATA ANALYSIS (EDA)",
-        "tag": "NUMPY • STATS • VISUALIZATION",
+        "name": "EXPLORATORY DATA ANALYSIS",
+        "tag": "NUMPY • STATS • DATA VIZ",
         "tag_type": "green",
-        "desc": "Uncovering distributions, hypothesis testing, identifying customer cohorts, and correlation matrix analysis.",
+        "desc": "Statistical distribution modeling, hypothesis testing & customer cohort segmentation.",
         "icon": "2",
         "badge": "45+ Features Engineered",
         "badge_type": "accent",
-        "y": 305
+        "y": 320
     },
     {
         "step": "STAGE 03",
         "name": "PREDICTIVE MODELING & ML",
         "tag": "SCIKIT-LEARN • EVALUATION",
         "tag_type": "gold",
-        "desc": "Supervised classification, clustering segmentation, and 5-fold cross-validation to guarantee model reliability.",
+        "desc": "Supervised classification, clustering & 5-fold cross-validation for model stability.",
         "icon": "3",
         "badge": "86.4% Model ROC-AUC",
         "badge_type": "gold",
-        "y": 470
+        "y": 500
     },
     {
         "step": "STAGE 04",
         "name": "EXECUTIVE DASHBOARDING",
-        "tag": "POWER BI • EXCEL • REPORTS",
+        "tag": "POWER BI • EXCEL • REPORTING",
         "tag_type": "purple",
-        "desc": "Translating mathematical outputs into interactive executive KPIs, churn monitors, and operational dashboards.",
+        "desc": "Translating analytics into executive KPIs, churn monitors & strategic business reports.",
         "icon": "4",
         "badge": "12 Decision KPIs Built",
         "badge_type": "purple",
-        "y": 635
+        "y": 680
     }
 ]
 
@@ -113,15 +114,15 @@ def render_pipeline_card():
 .tag-gold { fill: var(--gold); }
 .tag-purple { fill: var(--purple); }
 
-.badge-green { fill: var(--badge-bg); stroke: var(--green); stroke-width: 1px; }
-.badge-accent { fill: var(--badge-bg); stroke: var(--accent); stroke-width: 1px; }
-.badge-gold { fill: var(--badge-bg); stroke: var(--gold); stroke-width: 1px; }
-.badge-purple { fill: var(--badge-bg); stroke: var(--purple); stroke-width: 1px; }
+.badge-green { fill: var(--badge-bg); stroke: var(--green); stroke-width: 1.2px; }
+.badge-accent { fill: var(--badge-bg); stroke: var(--accent); stroke-width: 1.2px; }
+.badge-gold { fill: var(--badge-bg); stroke: var(--gold); stroke-width: 1.2px; }
+.badge-purple { fill: var(--badge-bg); stroke: var(--purple); stroke-width: 1.2px; }
 
-.circle-green { fill: var(--step-circle-bg); stroke: var(--green); stroke-width: 2px; }
-.circle-accent { fill: var(--step-circle-bg); stroke: var(--accent); stroke-width: 2px; }
-.circle-gold { fill: var(--step-circle-bg); stroke: var(--gold); stroke-width: 2px; }
-.circle-purple { fill: var(--step-circle-bg); stroke: var(--purple); stroke-width: 2px; }
+.circle-green { fill: var(--step-circle-bg); stroke: var(--green); stroke-width: 2.2px; }
+.circle-accent { fill: var(--step-circle-bg); stroke: var(--accent); stroke-width: 2.2px; }
+.circle-gold { fill: var(--step-circle-bg); stroke: var(--gold); stroke-width: 2.2px; }
+.circle-purple { fill: var(--step-circle-bg); stroke: var(--purple); stroke-width: 2.2px; }
 
 .fade-in {
   opacity: 0;
@@ -154,14 +155,14 @@ def render_pipeline_card():
         parts.append(f'<circle cx="{PAD + i*16}" cy="{TITLEBAR_H/2}" r="5" fill="{dotcol}"/>')
     parts.append(f'<text class="txt-muted" x="{W/2}" y="{TITLEBAR_H/2 + 4}" font-size="12" text-anchor="middle">Analytics Methodology &amp; Pipeline</text>')
 
-    # Top Header within card
+    # Top Header within card - Bigger, clearer typography
     parts.append(f'<g class="fade-in" style="animation-delay: {BASE_START:.2f}s">')
-    parts.append(f'<text class="txt-ink" x="{W/2}" y="74" font-size="19" font-weight="700" text-anchor="middle">HOW I TURN RAW DATA INTO BUSINESS VALUE</text>')
-    parts.append(f'<text class="txt-muted" x="{W/2}" y="98" font-size="13" text-anchor="middle">The 4-stage analytical framework applied across all my projects</text>')
+    parts.append(f'<text class="txt-ink" x="{W/2}" y="76" font-size="21" font-weight="700" text-anchor="middle">HOW I TURN RAW DATA INTO BUSINESS VALUE</text>')
+    parts.append(f'<text class="txt-muted" x="{W/2}" y="103" font-size="14.5" text-anchor="middle">The 4-stage analytical framework applied across all my projects</text>')
     parts.append('</g>')
 
     card_box_w = W - PAD * 2
-    card_box_h = 135
+    card_box_h = 148
 
     for idx, s in enumerate(STAGES):
         delay = BASE_START + idx * STAGE_STAGGER
@@ -176,45 +177,45 @@ def render_pipeline_card():
         parts.append(f'<rect class="tile-box" x="{PAD}" y="{box_y}" width="{card_box_w}" height="{card_box_h}" rx="10"/>')
 
         # Circle indicator
-        cx, cy = PAD + 40, box_y + card_box_h / 2 - 4
-        parts.append(f'<circle class="circle-{s["tag_type"]}" cx="{cx}" cy="{cy}" r="22"/>')
-        parts.append(f'<text class="txt-ink" x="{cx}" y="{cy + 6}" font-size="18" font-weight="700" text-anchor="middle">{s["icon"]}</text>')
+        cx, cy = PAD + 42, box_y + card_box_h / 2 - 4
+        parts.append(f'<circle class="circle-{s["tag_type"]}" cx="{cx}" cy="{cy}" r="24"/>')
+        parts.append(f'<text class="txt-ink" x="{cx}" y="{cy + 7}" font-size="20" font-weight="700" text-anchor="middle">{s["icon"]}</text>')
 
-        # Step + Title
-        tx = PAD + 76
-        parts.append(f'<text x="{tx}" y="{box_y + 36}" font-size="15" font-weight="700">')
+        # Step + Title (Larger & clearer font: 17px)
+        tx = PAD + 82
+        parts.append(f'<text x="{tx}" y="{box_y + 38}" font-size="17" font-weight="700">')
         parts.append(f'<tspan class="tag-{s["tag_type"]}">{step_txt}</tspan>')
         parts.append(f'<tspan class="txt-muted">  |  </tspan>')
         parts.append(f'<tspan class="txt-ink">{name_txt}</tspan>')
         parts.append('</text>')
 
-        # Description
-        parts.append(f'<text class="txt-muted" x="{tx}" y="{box_y + 68}" font-size="12.5">{desc_txt}</text>')
+        # Description (Larger font: 14px, safely within box width)
+        parts.append(f'<text class="txt-muted" x="{tx}" y="{box_y + 74}" font-size="14">{desc_txt}</text>')
 
-        # Tag
-        parts.append(f'<text class="tag-{s["tag_type"]}" x="{tx}" y="{box_y + 104}" font-size="11" font-weight="700" letter-spacing="0.5">{tag_txt}</text>')
+        # Tag (13px, bold monospace)
+        parts.append(f'<text class="tag-{s["tag_type"]}" x="{tx}" y="{box_y + 116}" font-size="13" font-weight="700" letter-spacing="0.5">{tag_txt}</text>')
 
-        # Badge
-        badge_w, badge_h = 230, 32
+        # Badge pill (Well-proportioned: 240x36 with 13.5px bold font)
+        badge_w, badge_h = 240, 36
         badge_x = PAD + card_box_w - badge_w - 20
-        badge_y = box_y + 82
+        badge_y = box_y + 92
         parts.append(f'<rect class="badge-{s["badge_type"]}" x="{badge_x}" y="{badge_y}" width="{badge_w}" height="{badge_h}" rx="6"/>')
-        parts.append(f'<text class="tag-{s["badge_type"]}" x="{badge_x + badge_w/2}" y="{badge_y + 20}" font-size="12" font-weight="700" text-anchor="middle">{badge_txt}</text>')
+        parts.append(f'<text class="tag-{s["badge_type"]}" x="{badge_x + badge_w/2}" y="{badge_y + 23}" font-size="13.5" font-weight="700" text-anchor="middle">{badge_txt}</text>')
 
         parts.append('</g>')
 
-        # Flow indicator to next stage
+        # Flow indicator arrow to next stage
         if idx < len(STAGES) - 1:
-            arrow_y = box_y + card_box_h + 8
+            arrow_y = box_y + card_box_h + 10
             parts.append(f'<g class="fade-in" style="animation-delay: {delay + 0.05:.2f}s">')
-            parts.append(f'<text class="txt-muted" x="{PAD + 40}" y="{arrow_y + 14}" font-size="18" text-anchor="middle">&#8595;</text>')
+            parts.append(f'<text class="txt-muted" x="{PAD + 42}" y="{arrow_y + 16}" font-size="20" text-anchor="middle">&#8595;</text>')
             parts.append('</g>')
 
     # Bottom footer line
-    foot_y = 820
+    foot_y = 895
     parts.append(f'<g class="fade-in" style="animation-delay: {BASE_START + 0.60:.2f}s">')
     parts.append(f'<line class="sep-line" x1="{PAD}" y1="{foot_y}" x2="{W - PAD}" y2="{foot_y}"/>')
-    parts.append(f'<text class="txt-green" x="{W/2}" y="{foot_y + 30}" font-size="13" font-weight="700" text-anchor="middle">RESULT: Clean Code  &#8226;  Validated Science  &#8226;  Actionable Business Decisions</text>')
+    parts.append(f'<text class="txt-green" x="{W/2}" y="{foot_y + 36}" font-size="14.5" font-weight="700" text-anchor="middle">RESULT: Clean Code  &#8226;  Validated Science  &#8226;  Actionable Business Decisions</text>')
     parts.append('</g>')
 
     parts.append('</svg>')
