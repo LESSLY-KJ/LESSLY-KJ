@@ -15,14 +15,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "..", "data", "contributions.json")
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, "..", "stats.svg")
 
-W, H = 840, 980
+W, H = 840, 880
 PAD = 20
 TITLEBAR_H = 34
 COLS, ROWS = 2, 3
 GAP = 16
 TILE_W = (W - PAD * 2 - GAP * (COLS - 1)) / COLS
-# Original tile height and typography baseline
-TILE_H = 140
+# Compact tile height paired with elongated monthly chart matching avatar-ascii.svg (840x880)
+TILE_H = 135
 TILES_TOP = TITLEBAR_H + PAD + 6
 CHART_TOP = TILES_TOP + ROWS * TILE_H + (ROWS - 1) * GAP + GAP
 
